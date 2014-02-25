@@ -1,0 +1,39 @@
+body {
+  margin: 10px;
+  font: 14px/21px Helvetica, sans-serif;
+  color: #333;
+}
+
+h1 {
+  font-size: 36px;
+  font-weight: normal;
+}
+
+a {
+  color: #00B7FF;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+input {
+  border: 1px solid #eee;
+  margin: -2px;
+  padding: 4px 6px;
+  font-size: 14px;
+  line-height: 20px;
+  height: 20px;
+}
+
+tr td:nth-child(5) input, tr td:nth-child(6) input {
+  text-align: right;
+}
+
+tr td:nth-child(3) input, tr td:nth-child(5) input, tr td:nth-child(8) input {
+  width: 80px;
+}
+
+input[type=number] {
+  width: 50px;
+}
