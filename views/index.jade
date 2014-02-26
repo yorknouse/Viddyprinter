@@ -71,19 +71,5 @@ block content
             )
   
   script(src="./socket.io/socket.io.js")
-  script.
+  script(src="./javascripts/client.js")
     
-    socket = io.connect('http://data.nouse.co.uk:29024');
-
-      var inputs = document.getElementById('form').getElementsByTagName('input');
-
-      for (var i = 0; i < inputs.length; i++) {
-        inputs[i].addEventListener('change', function(e) {
-          socket.emit('edit', [ this.id, this.value ]);
-        });
-      }
-
-    socket.on('update', function(data) {
-      console.log(data);
-      document.getElementById(data[0]).value = data[1];
-    });
