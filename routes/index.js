@@ -40,7 +40,7 @@ exports.totals = function(req, res) {
 
           maxPoints += fixtures[i].pointsAvailable;
 
-          if (fixtures[i].homeScore && fixtures[i].awayScore) {
+          if (typeof(fixtures[i].homeScore) === 'number' && typeof(fixtures[i].awayScore) === 'number') {
             if (fixtures[i].homeScore > fixtures[i].homeScore) {
                 homePoints += fixtures[i].pointsAvailable;
             }
