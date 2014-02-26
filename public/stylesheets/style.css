@@ -37,3 +37,68 @@ tr td:nth-child(3) input, tr td:nth-child(5) input, tr td:nth-child(8) input {
 input[type=number] {
   width: 50px;
 }
+
+.york {
+    color: #fcaf16;
+}
+
+.lancaster {
+    color: #ce393d;
+}
+
+.durham {
+    color: #50276B;
+}
+
+/*
+.progress {
+    height: 20px;
+    background: #F5F5F5;
+}
+
+.progress div {
+    height: 20px;
+    float: left;
+}
+
+.progress .york {
+    background: #fdaf17;
+}
+
+.progress .lancaster {
+    background: #ce393d;
+}
+
+.progress .durham {
+    background: #50276B;
+}
+*/
+
+#scoreboard {
+    text-align: left;
+    width: 100%;
+    margin: 0 0 20px;
+    border: 1px solid #d2d2d2;
+    color: #1a1a1a;
+}
+
+#scoreboard th:first-child, #scoreboard td:first-child {
+    text-align: right;
+}
+
+#scoreboard th, #scoreboard td {
+    padding: 8px 10px 0;
+    width: 50%;
+}
+
+#scoreboard th {
+    font-weight: normal;
+}
+
+#scoreboard td {
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 40px;
+    line-height: 40px;
+}
+

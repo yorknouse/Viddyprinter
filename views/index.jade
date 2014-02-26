@@ -69,6 +69,22 @@ block content
               placeholder='Durham',
               value=fixture.away
             )
+
+  table#scoreboard
+    thead
+      tr
+        th.york.
+          York
+        th.durham.
+          Durham
+    tbody
+      tr
+        td
+          big.york#homeScore.
+        td
+          big.durham#awayScore.
+
+  #progress
   
   script(src="./socket.io/socket.io.js")
   script(src="./javascripts/client.js")

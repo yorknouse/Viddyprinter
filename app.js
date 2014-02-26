@@ -7,7 +7,6 @@
 var io = require('socket.io');
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
@@ -31,6 +30,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 
+app.get('/totals', routes.totals);
 
 var fs = require("fs");
 var file = __dirname + "/fixtures.db";
@@ -87,5 +87,6 @@ io.sockets.on('connection', function(socket) {
     }
     db.close();
     socket.broadcast.emit('update', data);
+    socket.emit('message', 'success');
   });
 });

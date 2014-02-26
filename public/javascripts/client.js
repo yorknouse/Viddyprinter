@@ -1,3 +1,23 @@
+function updateTotals() {
+  var request = new XMLHttpRequest;
+  request.open('GET', './totals', true);
+
+  request.onreadystatechange = function() {
+    if (this.readyState === 4) {
+      if (this.status >= 200 && this.status < 400){
+        // Success!
+        var data = JSON.parse(this.responseText);
+        document.getElementById('homeScore').innerHTML = data.homePoints;
+        document.getElementById('awayScore').innerHTML = data.awayPoints;
+      } else {
+        // Error :(
+      }
+    }
+  }
+  request.send();
+  request = null;
+}
+
 socket = io.connect('http://data.nouse.co.uk:29024');
 
 socket.on('connecting', function() {
@@ -27,4 +47,8 @@ socket.on('update', function(data) {
   window.setTimeout(function() {
     element.style.background = "white";
   }, 500);
+  updateTotals();
+}).on('message', function(data) {
+  console.log('message');
+  console.log(data);
 });
