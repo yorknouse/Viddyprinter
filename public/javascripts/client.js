@@ -49,6 +49,7 @@ socket.on('update', function(data) {
   }, 500);
   updateTotals();
 }).on('message', function(data) {
-  console.log('message');
-  console.log(data);
+  updateTotals();
 });
+
+updateTotals();
