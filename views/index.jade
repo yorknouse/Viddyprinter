@@ -14,72 +14,71 @@ block content
         th= "Score"
         th= ""
     tbody
-      each fixture, index in fixtures
+      each fixture in fixtures
         tr
           td
             input(
               type='text',
-              id='fixture-' + index + '-name',
+              id=fixture.id + '-name',
               value=fixture.name
               )
           td
             input(
               type='time',
-              id='fixture-' + index + '-time',
+              id=fixture.id + '-time',
               value=fixture.time
             )
           td
             input(
               type='text',
-              id='fixture-' + index + '-where',
-              value=fixture.where
+              id=fixture.id + '-location',
+              value=fixture.location
             )
           td
             input(
               type='number',
-              id='fixture-' + index + '-pointsAvailable',
+              id=fixture.id + '-pointsAvailable',
               min='0',
               value=fixture.pointsAvailable
             )
           td
             input(
               type='text',
-              id='fixture-' + index + '-home',
+              id=fixture.id + '-home',
               placeholder='York',
               value=fixture.home
             )
           td
             input(
               type='number',
-              id='fixture-' + index + '-homeScore',
+              id=fixture.id + '-homeScore',
               min='0',
               value=fixture.homeScore
             )
           td
             input(
               type='number',
-              id='fixture-' + index + '-awayScore',
+              id=fixture.id + '-awayScore',
               min='0',
               value=fixture.awayScore
             )
           td
             input(
               type='text'
-              id='fixture-' + index + '-away',
+              id=fixture.id + '-away',
               placeholder='Durham',
               value=fixture.away
             )
   
-  script(src="/socket.io/socket.io.js")
+  script(src="./socket.io/socket.io.js")
   script.
     
-    socket = io.connect('http://www.nouse.co.uk/viddyprinter/');
+    socket = io.connect('http://data.nouse.co.uk:29024');
 
       var inputs = document.getElementById('form').getElementsByTagName('input');
 
       for (var i = 0; i < inputs.length; i++) {
-        inputs[i].addEventListener('input', function(e) {
-          console.log(e);
+        inputs[i].addEventListener('change', function(e) {
           socket.emit('edit', [ this.id, this.value ]);
         });
       }
