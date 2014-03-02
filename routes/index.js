@@ -89,24 +89,22 @@ exports.fixtures = function(req, res) {
 
   var db = new sqlite3.Database(file);
 
-    db.all("SELECT * FROM Fixtures", function(err, fixtures) {
+  db.serialize(function() {
+
+    db.all("SELECT * FROM Fixtures", function(err, rows) {
 
       if (err) {
         console.error(err.stack);
         res.send(500, 'Something broke!');
       }
       else {
-
-        res.json(fixtures);
-
+        res.render( 'fixtures', { fixtures: rows } );
       }
 
     });
 
+  });
+
   db.close();
 
 }
-
-
-
-
