@@ -1,55 +1,67 @@
-function updateTotals() {
-  var request = new XMLHttpRequest;
-  request.open('GET', './totals', true);
+(function () {
 
-  request.onreadystatechange = function() {
-    if (this.readyState === 4) {
-      if (this.status >= 200 && this.status < 400){
-        // Success!
-        var data = JSON.parse(this.responseText);
-        document.getElementById('homeScore').innerHTML = data.homePoints;
-        document.getElementById('awayScore').innerHTML = data.awayPoints;
-      } else {
-        // Error :(
-      }
-    }
+  var form = document.getElementsByTagName('form')[0];
+  var inputs = form.getElementsByTagName('input');
+  var changes = {};
+
+  function updateTotals() {
+    jQuery.get('./totals', function(data) {
+      document.getElementById('homeScore').innerHTML = data.homePoints;
+      document.getElementById('awayScore').innerHTML = data.awayPoints;
+    }, 'json');
   }
-  request.send();
-  request = null;
-}
 
-socket = io.connect('http://data.nouse.co.uk:29024');
+  function recordChanges(e) {
+    changes[this.id] = this.value;
+  }
 
-socket.on('connecting', function() {
-  document.title = "Connecting …";
-}).on('connect', function() {
-  document.body.style.background = "white";
-  document.title = "Connected :)";
-}).on('disconnect', function() {
-  document.title = "Disconnected :(";
-  document.body.style.background = "red";
-}).on('reconnecting', function() {
-  document.title = "Reconnecting …";
-});
+  jQuery(inputs).on('input change', recordChanges);
 
-var inputs = document.getElementById('form').getElementsByTagName('input');
+  jQuery(form).on('submit', function(e) {
 
-for (var i = 0; i < inputs.length; i++) {
-  inputs[i].addEventListener('change', function(e) {
-    socket.emit('edit', [ this.id, this.value ]);
+    jQuery('input[type=submit]').attr('value', 'Saving changes...');
+    e.preventDefault();
+
+    jQuery.post('./update', changes, function() {
+      changes = {};
+      jQuery('input[type=submit]').attr('value', 'Changes saved');
+      window.setTimeout(function() {
+        jQuery('input[type=submit]').attr('value', 'Save changes');
+      }, 1000);
+    }, 'json');
+
   });
-}
 
-socket.on('update', function(data) {
-  var element = document.getElementById(data[0]);
-  element.value = data[1];
-  element.style.background = "yellow";
-  window.setTimeout(function() {
-    element.style.background = "white";
-  }, 500);
-  updateTotals();
-}).on('message', function(data) {
-  updateTotals();
-});
+  var socket = io.connect('localhost');
 
-updateTotals();
+  socket.on('connecting', function() {
+    document.title = "Connecting …";
+  }).on('connect', function() {
+    document.body.style.background = "#eee";
+    document.title = "Connected :)";
+  }).on('disconnect', function() {
+    document.title = "Disconnected :(";
+    document.body.style.background = "red";
+  }).on('reconnecting', function() {
+    document.title = "Reconnecting …";
+  });
+
+  socket.on('update', function(data) {
+
+    for (field in data) {
+
+      var element = document.getElementById(field);
+      element.value = data[field];
+
+      element.style.background = "yellow";
+      window.setTimeout(function() {
+        element.style.background = "white";
+      }, 1000);
+
+    };
+
+    updateTotals();
+
+  });
+
+})();

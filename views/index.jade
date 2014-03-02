@@ -2,73 +2,85 @@ extends layout
 
 block content
 
-  table#form
-    thead
-      tr
-        th= "Name"
-        th= "Time"
-        th= "Where"
-        th= "Points available"
-        th= ""
-        th= "Score"
-        th= "Score"
-        th= ""
-    tbody
-      each fixture in fixtures
+  form(method='post' action='./update')
+    table
+      thead
         tr
-          td
-            input(
-              type='text',
-              id=fixture.id + '-name',
-              value=fixture.name
+          th= "Name"
+          th= "Time"
+          th= "Where"
+          th= "Points available"
+          th= ""
+          th= "Score"
+          th= "Score"
+          th= ""
+      tbody
+        each fixture in fixtures
+          tr
+            td
+              input(
+                type='text',
+                name='name-' + fixture.id,
+                value=fixture.name
+                )
+            td
+              input(
+                type='time',
+                id='time-' + fixture.id,
+                name='time-' + fixture.id,
+                value=fixture.time
               )
-          td
-            input(
-              type='time',
-              id=fixture.id + '-time',
-              value=fixture.time
-            )
-          td
-            input(
-              type='text',
-              id=fixture.id + '-location',
-              value=fixture.location
-            )
-          td
-            input(
-              type='number',
-              id=fixture.id + '-pointsAvailable',
-              min='0',
-              value=fixture.pointsAvailable
-            )
-          td
-            input(
-              type='text',
-              id=fixture.id + '-home',
-              placeholder='York',
-              value=fixture.home
-            )
-          td
-            input(
-              type='number',
-              id=fixture.id + '-homeScore',
-              min='0',
-              value=fixture.homeScore
-            )
-          td
-            input(
-              type='number',
-              id=fixture.id + '-awayScore',
-              min='0',
-              value=fixture.awayScore
-            )
-          td
-            input(
-              type='text'
-              id=fixture.id + '-away',
-              placeholder='Durham',
-              value=fixture.away
-            )
+            td
+              input(
+                type='text',
+                id='location-' + fixture.id,
+                name='location-' + fixture.id,
+                value=fixture.location
+              )
+            td
+              input(
+                type='number',
+                id='pointsAvailable-' + fixture.id,
+                name='pointsAvailable-' + fixture.id,
+                min='0',
+                placeholder='0',
+                value=fixture.pointsAvailable
+              )
+            td
+              input(
+                type='text',
+                id='home-' + fixture.id,
+                name='home-' + fixture.id,
+                placeholder='York',
+                value=fixture.home
+              )
+            td
+              input(
+                type='number',
+                id='homeScore-' + fixture.id,
+                name='homeScore-' + fixture.id,
+                min='0',
+                step='any',
+                value=fixture.homeScore
+              )
+            td
+              input(
+                type='number',
+                id='awayScore-' + fixture.id,
+                name='awayScore-' + fixture.id,
+                min='0',
+                step='any',
+                value=fixture.awayScore
+              )
+            td
+              input(
+                type='text'
+                id='away-' + fixture.id,
+                name='away-' + fixture.id,
+                placeholder='Durham',
+                value=fixture.away
+              )
+    input(type='submit' value='Save changes')
 
   table#scoreboard
     thead
@@ -85,7 +97,7 @@ block content
           big.durham#awayScore.
 
   #progress
-  
+
+  script(src="http://www.nouse.co.uk/wp-includes/js/jquery/jquery.js")
   script(src="./socket.io/socket.io.js")
   script(src="./javascripts/client.js")
-    

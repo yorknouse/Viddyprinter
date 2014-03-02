@@ -1,20 +1,29 @@
+var fs = require('fs');
+var file = 'fixtures.db';
+var sqlite3 = require('sqlite3');
+
 
 /*
  * GET home page.
  */
 
-var fs = require('fs');
-var file = 'fixtures.db';
-var sqlite3 = require('sqlite3');
-var db = new sqlite3.Database(file);
-
 exports.index = function(req, res) {
 
+  var db = new sqlite3.Database(file);
+
   db.serialize(function() {
-    db.all("SELECT * FROM Fixtures", function(err, rows) {
+    db.all("SELECT * FROM Fixtures", function(err, rows) {    
+      if (err) {
+        console.error(err.stack);
+        res.send(500, 'Something broke!');
+      }
+      else {
         res.render('index', { fixtures: rows });
+      }
     });
   });
+
+  db.close();
 
 }
 
@@ -25,7 +34,8 @@ exports.index = function(req, res) {
 
 exports.totals = function(req, res) {
 
-  db.serialize(function() {
+  var db = new sqlite3.Database(file);
+
     db.all("SELECT * FROM Fixtures", function(err, fixtures) {
 
       if (err) {
@@ -70,6 +80,6 @@ exports.totals = function(req, res) {
 
     });
 
-  });
+  db.close();
 
 }
