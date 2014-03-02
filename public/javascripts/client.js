@@ -32,7 +32,7 @@
 
   });
 
-  var socket = io.connect('localhost');
+  var socket = io.connect('http://data.nouse.co.uk:29024');
 
   socket.on('connecting', function() {
     document.title = "Connecting …";
