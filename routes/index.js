@@ -83,3 +83,30 @@ exports.totals = function(req, res) {
   db.close();
 
 }
+
+
+exports.fixtures = function(req, res) {
+
+  var db = new sqlite3.Database(file);
+
+    db.all("SELECT * FROM Fixtures", function(err, fixtures) {
+
+      if (err) {
+        console.error(err.stack);
+        res.send(500, 'Something broke!');
+      }
+      else {
+
+        res.json(fixtures);
+
+      }
+
+    });
+
+  db.close();
+
+}
+
+
+
+

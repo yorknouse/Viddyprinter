@@ -27,7 +27,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/totals', routes.totals);
-
+app.get('/fixtures', routes.fixtures);
 
 var fs = require("fs");
 var file = __dirname + "/fixtures.db";
