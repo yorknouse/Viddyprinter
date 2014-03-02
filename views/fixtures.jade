@@ -28,4 +28,7 @@ each fixture in fixtures
         |(#{fixture.homeScore}&ndash;#{fixture.awayScore})
 
       else if fixture.pointsAvailable
-        |#{fixture.pointsAvailable} points available
+        if fixture.pointsAvailable === 1
+          |#{fixture.pointsAvailable} point available
+        else
+          |#{fixture.pointsAvailable} points available
