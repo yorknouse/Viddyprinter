@@ -90,14 +90,14 @@ server.listen(app.get('port'), function() {
 
 var io = require('socket.io').listen(server);
 
-app.post('/', function(request, response) {
+app.post('/', function (req, res) {
 
   var changes = {};
   var db = new sqlite3.Database(file);
 
-  db.serialize(function() {
+  db.serialize(function () {
 
-    for (field in request.body) {
+    for (field in req.body) {
 
       var identifiers = field.split('-'); // ['name', '3']
 
@@ -110,26 +110,28 @@ app.post('/', function(request, response) {
         case 'homeScore':
         case 'awayScore':
         case 'away':
-          db.run("UPDATE Fixtures SET " + identifiers[0] + " = $contents WHERE id = $id", {
-            $id: identifiers[1],
-            $contents: request.body[field],
-          }, function(err) {
-            if (err) {
-              console.log(err);
+          db.run(
+            "UPDATE Fixtures SET " + identifiers[0] + " = $contents WHERE id = $id", {
+              $id:       identifiers[1],
+              $contents: req.body[field],
+            },
+            function(err) {
+              if (err) {
+                console.log(err);
+              }
+              else {
+                changes[field] = req.body[field];
+              }
             }
-            else {
-              changes[field] = request.body[field];
-            }
-          });
+          );
       }
 
     }
 
   });
 
-  db.close(function() {
-    io.sockets.emit('update', changes);
-    return routes.totals(request, response);
-  });
+  db.close();
+
+  res.redirect('/');
 
 });
