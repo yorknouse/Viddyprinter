@@ -22,7 +22,7 @@
     jQuery('input[type=submit]').attr('value', 'Saving changes...');
     e.preventDefault();
 
-    jQuery.post('./update', changes, function() {
+    jQuery.post(this.action, changes, function() {
       changes = {};
       jQuery('input[type=submit]').attr('value', 'Changes saved');
       window.setTimeout(function() {
@@ -37,11 +37,11 @@
   socket.on('connecting', function() {
     document.title = "Connecting …";
   }).on('connect', function() {
-    document.body.style.background = "#eee";
+    // document.body.style.background = "#eee";
     document.title = "Connected :)";
   }).on('disconnect', function() {
     document.title = "Disconnected :(";
-    document.body.style.background = "red";
+    // document.body.style.background = "red";
   }).on('reconnecting', function() {
     document.title = "Reconnecting …";
   });

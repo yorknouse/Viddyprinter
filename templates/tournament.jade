@@ -2,10 +2,12 @@ extends layout
 
 block content
 
-  p.
-    (Posts in the "Varsity" category will display this information in their sidebars.)
+  h1
+    a(href = '/')
+      | Tournaments
+    | /#{name}
 
-  form(method='post' action='./update')
+  form(method='post' action='/')
     table
       thead
         tr
@@ -101,7 +103,3 @@ block content
           big.durham#awayScore.
 
   #progress
-
-  script(src="http://www.nouse.co.uk/wp-includes/js/jquery/jquery.js")
-  script(src="./socket.io/socket.io.js")
-  script(src="./javascripts/client.js")
