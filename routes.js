@@ -2,7 +2,7 @@ var sqlite3 = require('sqlite3');
 
 
 /*
- * GET tournaments page
+ * GET tournaments administration page
  */
 
 exports.index = function (req, res) {
@@ -23,7 +23,7 @@ exports.index = function (req, res) {
 
 
 /*
- * GET fixtures page for a tournament
+ * GET fixtures administration page for a tournament
  */
 
 exports.tournament = function (req, res) {
@@ -40,7 +40,7 @@ exports.tournament = function (req, res) {
       $id: req.params.id
     },
     function (err, row) {
-      if (err || !row  || !row.name) {
+      if (err || !row || !row.name) {
         res.send(404, 'Tournament not found');
       }
       else {
@@ -69,10 +69,37 @@ exports.tournament = function (req, res) {
 
 
 /*
+ * GET fixtures HTML fragment for a tournament
+ */
+
+exports.fixturesHTML = function (req, res) {
+
+  var db = new sqlite3.Database(file);
+
+  db.all(
+    'SELECT * FROM Fixtures WHERE tournament = $id',
+    {
+      $id: req.params.id
+    },
+    function (err, rows) {
+      if (err) {
+      }
+      else {
+        res.render('fixtures', { fixtures: rows });
+      }
+    }
+  );
+  
+  db.close();
+
+}
+
+
+/*
  * GET fixtures JSON for a tournament
  */
 
-exports.fixtures = function (req, res) {
+exports.fixturesJSON = function (req, res) {
 
   var db = new sqlite3.Database(file);
 
@@ -99,7 +126,7 @@ exports.fixtures = function (req, res) {
  * GET points totals JSON for a tournament
  */
 
-exports.totals = function (req, res) {
+exports.totalsJSON = function (req, res) {
 
   var db = new sqlite3.Database(file);
 

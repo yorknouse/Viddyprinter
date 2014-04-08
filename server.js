@@ -36,9 +36,11 @@ if ('development' == app.get('env')) {
 
 
 app.get('/', routes.index);
-app.get('/tournaments/:id', routes.tournament);
-// app.get(/^\/tournaments\/([0-9]+)\/totals.json$/, routes.totals);
-// app.get(/^\/tournaments\/([0-9]+)\/fixtures.json$/, routes.fixtures);
+app.get('/tournaments', routes.index);
+app.get('/tournaments/(:id).html', routes.fixturesHTML);
+app.get('/tournaments/(:id).json', routes.fixturesJSON);
+app.get('/tournaments/(:id)/totals.json', routes.totalsJSON);
+app.get('/tournaments/(:id)', routes.tournament);
 
 
 // database setup
