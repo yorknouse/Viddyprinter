@@ -42,54 +42,6 @@ if ('development' == app.get('env')) {
 }
 
 
-// authentication
-
-passport.use(new GoogleStrategy({
-    returnURL: 'http://data.nouse.co.uk:29024/login/google',
-    realm: 'http://data.nouse.co.uk:29024/'
-  },
-  function(identifier, profile, done) {
-    console.log(profile.emails);
-    for (i = 0; i < profile.emails.length; i++) {
-      if (profile.emails[i].value.substr(-12) === '@nouse.co.uk') {
-        return done(null, identifier);
-      }
-    }
-    return done(null, false);
-  }
-));
-
-// app.get('/login/google', passport.authenticate('google'));
-
-app.get(
-  '/login/google',
-  passport.authenticate(
-    'google',
-    {
-      successRedirect: '/tournaments',
-      failureRedirect: '/' // try again
-    }
-  )
-);
-
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
-
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
-
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  else {
-    res.redirect('/');
-  }
-}
-
-
 // URLs
 
 app.get('/', function (req, res) {
@@ -112,6 +64,56 @@ app.get('/logout', function (req, res) {
   res.redirect('/');
 });
 
+// authentication
+
+passport.use(new GoogleStrategy({ // authentication strategy
+    returnURL: 'http://data.nouse.co.uk:29024/login/google/return',
+    realm: 'http://data.nouse.co.uk:29024/'
+  },
+  function(identifier, profile, done) { // verify callback
+    console.log(profile.emails);
+    for (i = 0; i < profile.emails.length; i++) {
+      if (profile.emails[i].value.substr(-12) === '@nouse.co.uk') {
+        return done(null, identifier);
+      }
+    }
+    return done(null, false);
+  }
+));
+
+// two routes are required for OpenID (Google) authentication
+
+app.get('/login/google', passport.authenticate('google'));
+
+app.get(
+  '/login/google/return',
+  passport.authenticate(
+    'google',
+    {
+      successRedirect: '/tournaments',
+      failureRedirect: '/' // try again
+    }
+  )
+);
+
+// session serialization
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  else {
+    res.redirect('/');
+  }
+}
 
 
 // database setup
