@@ -13,7 +13,7 @@ exports.tournaments = function (req, res) {
     if (err) {
     }
     else {
-      res.render('index', { tournaments: rows });
+      res.render('tournaments', { tournaments: rows });
     }
   });
 

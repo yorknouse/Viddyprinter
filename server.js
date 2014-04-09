@@ -45,8 +45,8 @@ if ('development' == app.get('env')) {
 // authentication
 
 passport.use(new GoogleStrategy({
-    returnURL: 'http://localhost:29024/login/google',
-    realm: 'http://localhost:29024/'
+    returnURL: 'http://data.nouse.co.uk:29024/auth/google',
+    realm: 'http://data.nouse.co.uk:29024/'
   },
   function(identifier, profile, done) {
     console.log(profile.emails);
@@ -59,15 +59,15 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-// app.get('/login/google', passport.authenticate('google'));
+app.get('/auth/google', passport.authenticate('google'));
 
 app.get(
-  '/login',
+  '/auth/google',
   passport.authenticate(
     'google',
     {
       successRedirect: '/tournaments',
-      failureRedirect: '/login' // try again
+      failureRedirect: '/' // try again
     }
   )
 );
@@ -85,7 +85,7 @@ function isLoggedIn(req, res, next) {
     return next();
   }
   else {
-    res.redirect('/login/google'); // try again
+    res.redirect('/');
   }
 }
 
