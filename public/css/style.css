@@ -9,8 +9,23 @@ h1 {
   font-weight: normal;
 }
 
+h2 {
+  font-size: 18px;
+  font-weight: normal;
+}
+
 a {
   color: #00B7FF;
+}
+
+pre {
+  color: #000;
+  font-size: 12px;
+  line-height: 1em;
+}
+
+code {
+  padding: 5px;
 }
 
 table {
@@ -40,19 +55,33 @@ input[type=number] {
   width: 50px;
 }
 
-input[type=submit] {
+input[type=submit], .button {
+  cursor: pointer;
+  border: 0;
+  border-top: 1px solid #fff;
+  border-bottom: 4px outset red;
+  background: red;
+  color: white;
+  outline: 0;
+  vertical-align: middle;
   -webkit-appearance: none;
-  border: 2px outset #aaa;
   margin: 10px auto 24px;
-  padding: 8px 12px;
+  padding: 8px 12px 6px;
   font-size: 20px;
   line-height: 24px;
-  background: #aaa;
-  display: block;
+  display: inline-block;
+  text-decoration: none;
+  border-radius: 8px;
 }
 
-input[type=submit]:active {
-  border-style: inset;
+input[type=submit]:hover, .button:hover{
+  border-top-width: 0;
+  border-bottom-width: 5px;
+}
+
+input[type=submit]:active, .button:active{
+  border-top-width: 3px;
+  border-bottom-width: 2px;
 }
 
 .york {

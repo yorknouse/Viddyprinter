@@ -1,0 +1,12 @@
+extends layout
+
+block content
+
+  h1.
+    Tournaments
+
+  each tournament in tournaments
+    ul
+      li
+        a(href = '/tournaments/' + tournament.id)
+          | #{tournament.name}

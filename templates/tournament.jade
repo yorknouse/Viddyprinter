@@ -3,11 +3,11 @@ extends layout
 block content
 
   h1
-    a(href = '/')
+    a(href = '/tournaments')
       | Tournaments
-    | /#{name}
+    | /#{tournament.name}
 
-  form(method='post' action='/')
+  form(method='post' action='/tournaments/' + tournament.id + '/update')
     table
       thead
         tr

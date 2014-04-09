@@ -5,7 +5,7 @@ var sqlite3 = require('sqlite3');
  * GET tournaments administration page
  */
 
-exports.index = function (req, res) {
+exports.tournaments = function (req, res) {
 
   var db = new sqlite3.Database(file);
 
@@ -30,25 +30,21 @@ exports.tournament = function (req, res) {
 
   var db = new sqlite3.Database(file);
 
-  var tournamentName = "";
-
-  console.log(tournamentName);
+  var tournament = {};
 
   db.serialize(function () {
 
-    db.get('SELECT name FROM tournaments WHERE id = $id', {
+    db.get('SELECT * FROM tournaments WHERE id = $id', {
       $id: req.params.id
     },
     function (err, row) {
-      if (err || !row || !row.name) {
+      if (err || !row) {
         res.send(404, 'Tournament not found');
       }
       else {
-        tournamentName = row.name;
+        tournament = row;
       }
     });
-
-    console.log(tournamentName);
     
     db.all('SELECT * FROM fixtures WHERE tournament = $tournament', {
       $tournament: req.params.id
@@ -57,7 +53,7 @@ exports.tournament = function (req, res) {
       if (err) {
       }
       else {
-        res.render('tournament', { name: tournamentName, fixtures: rows });
+        res.render('tournament', { tournament: tournament, fixtures: rows });
       }
     });
 
