@@ -45,7 +45,7 @@ if ('development' == app.get('env')) {
 // authentication
 
 passport.use(new GoogleStrategy({
-    returnURL: 'http://data.nouse.co.uk:29024/auth/google',
+    returnURL: 'http://data.nouse.co.uk:29024/login/google',
     realm: 'http://data.nouse.co.uk:29024/'
   },
   function(identifier, profile, done) {
@@ -59,10 +59,10 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-app.get('/auth/google', passport.authenticate('google'));
+// app.get('/login/google', passport.authenticate('google'));
 
 app.get(
-  '/auth/google',
+  '/login/google',
   passport.authenticate(
     'google',
     {
@@ -71,6 +71,11 @@ app.get(
     }
   )
 );
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -105,6 +110,7 @@ app.get('/tournaments/(:id).html', routes.fixturesHTML);
 app.get('/tournaments/(:id).json', routes.fixturesJSON);
 app.get('/tournaments/(:id)/totals.json', routes.totalsJSON);
 app.get('/tournaments/(:id)', isLoggedIn, routes.tournament);
+app.get('/tournaments/(:id)/add', isLoggedIn, routes.tournament);
 
 
 // database setup
