@@ -72,11 +72,6 @@ app.get(
   )
 );
 
-app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
-});
-
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -111,6 +106,12 @@ app.get('/tournaments/(:id).json', routes.fixturesJSON);
 app.get('/tournaments/(:id)/totals.json', routes.totalsJSON);
 app.get('/tournaments/(:id)', isLoggedIn, routes.tournament);
 app.get('/tournaments/(:id)/add', isLoggedIn, routes.tournament);
+
+app.get('/logout', function (req, res) {
+  req.logout();
+  res.redirect('/');
+});
+
 
 
 // database setup
