@@ -5,11 +5,14 @@
   var changes = {};
 
   function updateTotals() {
-    jQuery.get('./totals', function(data) {
+    // not completely reliable because /tournaments/2//totals.json returns a 404
+    jQuery.get(window.location.href + '/totals.json', function(data) {
       document.getElementById('homeScore').innerHTML = data.homePoints;
       document.getElementById('awayScore').innerHTML = data.awayPoints;
     }, 'json');
   }
+
+  updateTotals();
 
   function recordChanges(e) {
     changes[this.id] = this.value;
@@ -18,17 +21,18 @@
   jQuery(inputs).on('input change', recordChanges);
 
   jQuery(form).on('submit', function(e) {
-
-    jQuery('input[type=submit]').attr('value', 'Saving changes...');
+    changes = {};
     e.preventDefault();
 
-    jQuery.post(this.action, changes, function() {
-      changes = {};
+    jQuery('input[type=submit]').attr('value', 'Saving changes...');
+
+    jQuery.post(this.action + '?ajax=true', changes, function() {
       jQuery('input[type=submit]').attr('value', 'Changes saved');
       window.setTimeout(function() {
         jQuery('input[type=submit]').attr('value', 'Save changes');
       }, 1000);
-    }, 'json');
+
+    });
 
   });
 
