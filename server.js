@@ -27,7 +27,7 @@ app.use(express.methodOverride());
 
 app.use(express.cookieParser());
 app.use(express.bodyParser());
-app.use(express.session({ secret: 'keyboard cat' }));
+app.use(express.session({ secret: 'ctfvygbuhnijmnhbvugubhno' }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -190,8 +190,13 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
 
   });
 
-  db.close();
-
-  res.redirect('/');
+  db.close(function () {
+    if (req.query.ajax) {
+      res.send(200);
+    }
+    else {
+      res.redirect('/tournaments/' + req.params.id);
+    }
+  });
 
 });
