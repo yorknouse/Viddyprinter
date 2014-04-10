@@ -21,9 +21,7 @@
   jQuery(inputs).on('input change', recordChanges);
 
   jQuery(form).on('submit', function(e) {
-    changes = {};
     e.preventDefault();
-
     jQuery('input[type=submit]').attr('value', 'Saving changes...');
 
     jQuery.post(this.action + '?ajax=true', changes, function() {
@@ -31,9 +29,9 @@
       window.setTimeout(function() {
         jQuery('input[type=submit]').attr('value', 'Save changes');
       }, 1000);
-
     });
 
+    changes = {};
   });
 
   var socket = io.connect('/');
