@@ -57,7 +57,7 @@ block content
                 type='text',
                 id='home-' + fixture.id,
                 name='home-' + fixture.id,
-                placeholder='York',
+                placeholder=tournament.away,
                 value=fixture.home
               )
             td
@@ -83,7 +83,7 @@ block content
                 type='text'
                 id='away-' + fixture.id,
                 name='away-' + fixture.id,
-                placeholder='Durham',
+                placeholder=tournament.away,
                 value=fixture.away
               )
     input(type='submit' value='Save changes')
@@ -91,16 +91,16 @@ block content
   table#scoreboard
     thead
       tr
-        th.york.
-          York
-        th.durham.
-          Durham
+        th.
+          #{tournament.home}
+        th.
+          #{tournament.away}
     tbody
       tr
         td
-          big.york#homeScore.
+          big#homeScore.
         td
-          big.durham#awayScore.
+          big#awayScore.
 
   #progress
 

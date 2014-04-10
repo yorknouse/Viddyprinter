@@ -129,7 +129,7 @@ if (!fs.existsSync(file)) {
 
   db.serialize(function() {
     db.run('CREATE TABLE Fixtures (id INTEGER PRIMARY KEY, tournament INTEGER, name TEXT, time TEXT, location TEXT, pointsAvailable FLOAT, home TEXT, homeScore FLOAT, awayScore FLOAT, away TEXT);');
-    db.run('CREATE TABLE Tournaments (id INTEGER PRIMARY KEY, name TEXT);');
+    db.run('CREATE TABLE Tournaments (id INTEGER PRIMARY KEY, name TEXT, home TEXT, away TEXT);');
   });
 
   db.close();
