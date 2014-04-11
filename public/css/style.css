@@ -5,12 +5,14 @@ body {
 }
 
 h1 {
-  font-size: 36px;
+  font-size: 30px;
+  line-height: 36px;
   font-weight: normal;
 }
 
 h2 {
-  font-size: 18px;
+  font-size: 20px;
+  line-height: 24px;
   font-weight: normal;
 }
 
@@ -20,7 +22,7 @@ a {
 
 pre {
   color: #000;
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1em;
 }
 
@@ -84,15 +86,15 @@ input[type=submit]:active, .button:active{
   border-bottom-width: 2px;
 }
 
-.york {
+.York {
     color: #fcaf16;
 }
 
-.lancaster {
+.Lancaster {
     color: #ce393d;
 }
 
-.durham {
+.Durham {
     color: #50276B;
 }
 
