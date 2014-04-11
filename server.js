@@ -152,7 +152,7 @@ var io = require('socket.io').listen(server);
 
 app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
 
-  var changes = {};
+  var changes = {}; // changes to be broadcast
   var db = new sqlite3.Database(file);
 
   db.serialize(function () {
@@ -191,6 +191,7 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
   });
 
   db.close(function () {
+    io.sockets.emit('update', changes);
     if (req.query.ajax) {
       res.send(200);
     }
