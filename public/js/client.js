@@ -38,32 +38,28 @@
 
   socket.on('connecting', function() {
     document.title = "Connecting …";
-  }).on('connect', function() {
+  })
+  .on('connect', function() {
     // document.body.style.background = "#eee";
     document.title = "Connected :)";
-  }).on('disconnect', function() {
+  })
+  .on('disconnect', function() {
     document.title = "Disconnected :(";
     // document.body.style.background = "red";
-  }).on('reconnecting', function() {
+  })
+  .on('reconnecting', function() {
     document.title = "Reconnecting …";
-  });
-
-  socket.on('update', function(data) {
-
+  })
+  .on('update', function(data) {
     for (field in data) {
-
       var element = document.getElementById(field);
       element.value = data[field];
-
       element.style.background = "yellow";
       window.setTimeout(function() {
         element.style.background = "white";
       }, 1000);
-
     };
-
     updateTotals();
-
   });
 
 })();
