@@ -2,13 +2,8 @@ extends layout
 
 block content
 
-  h1.
-    Tournaments
-  each tournament in tournaments
-    ul
-      li
-        a(href = '/tournaments/' + tournament.id).
-          #{tournament.name}
-  p
-    a(href = '/logout').
-      Log out
+  h1 Tournaments
+  ul: each tournament in tournaments
+    li: a(href='/tournaments/'+tournament.id).
+      #{tournament.name}
+  p: a(href = '/logout') Log out

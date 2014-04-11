@@ -3,86 +3,85 @@ extends layout
 block content
 
   h1
-    a(href = '/tournaments')
-      | Tournaments
-    | /#{tournament.name}
+    a(href='/tournaments') Tournaments
+    /#{tournament.name}
 
-  form(method='post' action='/tournaments/' + tournament.id + '/update')
+  form(method='post' action='/tournaments/'+tournament.id+'/update')
     table
       thead
         tr
-          th= "Name"
-          th= "Time"
-          th= "Where"
-          th= "Points available"
-          th= ""
-          th= "Score"
-          th= "Score"
-          th= ""
+          th(scope='col') Name
+          th(scope='col') Time
+          th(scope='col') Where
+          th(scope='col') Points available
+          th(scope='col') 
+          th(scope='col') Score
+          th(scope='col') Score
+          th(scope='col') 
       tbody
         each fixture in fixtures
           tr
             td
               input(
-                type='text',
-                id='name-' + fixture.id,
-                name='name-' + fixture.id,
+                type ='text',
+                id   ='name-' + fixture.id,
+                name ='name-' + fixture.id,
                 value=fixture.name
                 )
             td
               input(
-                type='time',
-                id='time-' + fixture.id,
-                name='time-' + fixture.id,
+                type ='time',
+                id   ='time-' + fixture.id,
+                name ='time-' + fixture.id,
                 value=fixture.time
               )
             td
               input(
-                type='text',
-                id='location-' + fixture.id,
-                name='location-' + fixture.id,
+                type ='text',
+                id   ='location-' + fixture.id,
+                name ='location-' + fixture.id,
                 value=fixture.location
               )
             td
               input(
-                type='number',
-                id='pointsAvailable-' + fixture.id,
-                name='pointsAvailable-' + fixture.id,
-                min='0',
+                type ='number',
+                id   ='pointsAvailable-' + fixture.id,
+                name ='pointsAvailable-' + fixture.id,
+                min  ='0',
                 placeholder='0',
                 value=fixture.pointsAvailable
               )
             td
               input(
-                type='text',
-                id='home-' + fixture.id,
-                name='home-' + fixture.id,
+                type ='text',
+                id   ='home-' + fixture.id,
+                name ='home-' + fixture.id,
                 placeholder=tournament.home,
                 value=fixture.home
               )
             td
               input(
-                type='number',
-                id='homeScore-' + fixture.id,
-                name='homeScore-' + fixture.id,
-                min='0',
-                step='any',
+                type ='number',
+                id   ='homeScore-' + fixture.id,
+                name ='homeScore-' + fixture.id,
+                min  ='0',
+                step ='any',
                 value=fixture.homeScore
               )
             td
               input(
-                type='number',
-                id='awayScore-' + fixture.id,
-                name='awayScore-' + fixture.id,
-                min='0',
-                step='any',
+                type ='number',
+                id   ='awayScore-' + fixture.id,
+                name ='awayScore-' + fixture.id,
+                min  ='0',
+                step ='any',
                 value=fixture.awayScore
               )
             td
               input(
-                type='text'
-                id='away-' + fixture.id,
-                name='away-' + fixture.id,
+                type ='text'
+                id   ='away-' +fixture.id,
+                name ='away-' + fixture.id,
                 placeholder=tournament.away,
                 value=fixture.away
               )
@@ -91,16 +90,16 @@ block content
   table#scoreboard
     thead
       tr
-        th.
+        th(class=tournament.home).
           #{tournament.home}
-        th.
+        th(class=tournament.away).
           #{tournament.away}
     tbody
       tr
-        td
-          big#homeScore.
-        td
-          big#awayScore.
+        th(class=tournament.home).
+          big#homeScore
+        th(class=tournament.away).
+          big#awayScore
 
   #progress
 

@@ -1,7 +1,16 @@
 each fixture in fixtures
   li
-    h5= fixture.name
-    p= fixture.time+', '+fixture.location
+    h5 #{fixture.name}
+
+    if (fixture.time || fixture.location)
+      p
+        if fixture.time
+          | #{fixture.time}
+          if fixture.location
+            , 
+        if fixture.location
+          | #{fixture.location}
+
     p.result
 
       if ( fixture.homeScore || fixture.homeScore === 0 ) && ( fixture.awayScore || fixture.awayScore === 0 )
@@ -9,30 +18,30 @@ each fixture in fixtures
         if fixture.pointsAvailable
 
           if (fixture.homeScore > fixture.awayScore)
-            span.york
-              | York +#{fixture.pointsAvailable} 
+            span(class=tournament.home).
+              #{tournament.home} +#{fixture.pointsAvailable} 
 
           else if (fixture.homeScore < fixture.awayScore) 
-            span.durham
-              | Durham +#{fixture.pointsAvailable} 
+            span(class=tournament.away).
+              #{tournament.away} +#{fixture.pointsAvailable} 
 
           else
-            span.york
-              | York +#{fixture.pointsAvailable/2} 
-            span.durham
-              | Durham +#{fixture.pointsAvailable/2} 
+            span(class=tournament.home).
+              #{tournament.home} +#{fixture.pointsAvailable/2} 
+            span(class=tournament.away).
+              #{tournament.home} +#{fixture.pointsAvailable/2} 
 
 
-        if ( fixture.home && fixture.away )
+        if (fixture.home && fixture.away)
           | (#{fixture.home} #{fixture.homeScore}&ndash;#{fixture.awayScore} #{fixture.away})
         else
           | (#{fixture.homeScore}&ndash;#{fixture.awayScore})
 
       else if fixture.pointsAvailable
         if fixture.pointsAvailable === 1
-          |#{fixture.pointsAvailable} point available 
+          | #{fixture.pointsAvailable} point available 
         else
-          |#{fixture.pointsAvailable} points available 
+          | #{fixture.pointsAvailable} points available 
 
-        if ( fixture.home && fixture.away )
-          |(#{fixture.home} v #{fixture.away}) 
+        if (fixture.home && fixture.away)
+          | (#{fixture.home} v #{fixture.away}) 
