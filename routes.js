@@ -23,10 +23,10 @@ exports.tournaments = function (req, res) {
 
 
 /*
- * GET fixtures administration page for a tournament
+ * Generic function for rendering a tournament some way
  */
 
-exports.tournament = function (req, res) {
+function tournamentFixtures (req, res, view) {
 
   var db = new sqlite3.Database(file);
 
@@ -53,7 +53,7 @@ exports.tournament = function (req, res) {
       if (err) {
       }
       else {
-        res.render('tournament', { tournament: tournament, fixtures: rows });
+        res.render(view, { tournament: tournament, fixtures: rows });
       }
     });
 
@@ -63,31 +63,21 @@ exports.tournament = function (req, res) {
 
 }
 
+/*
+ * GET fixtures administration page for a tournament
+ */
+
+exports.tournament = function (req, res) {
+  tournamentFixtures(req, res, 'tournament');
+}
+
 
 /*
  * GET fixtures HTML fragment for a tournament
  */
 
 exports.fixturesHTML = function (req, res) {
-
-  var db = new sqlite3.Database(file);
-
-  db.all(
-    'SELECT * FROM Fixtures WHERE tournament = $id',
-    {
-      $id: req.params.id
-    },
-    function (err, rows) {
-      if (err) {
-      }
-      else {
-        res.render('fixtures', { fixtures: rows });
-      }
-    }
-  );
-  
-  db.close();
-
+  tournamentFixtures(req, res, 'fixtures');
 }
 
 
