@@ -17,7 +17,7 @@ var routes = require('./routes');
 
 // all environments
 
-app.set('port', process.env.PORT || 29024);
+app.set('port', process.env.PORT || 22245);
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'jade');
 app.use(express.logger('dev'));
@@ -45,17 +45,17 @@ if ('development' === app.get('env')) {
 // authentication
 
 function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
+    // if (req.isAuthenticated()) {
         return next();
-    }
-    res.redirect('/');
+    // }
+    // res.redirect('/');
 }
 
 passport.use(
     new GoogleStrategy(
         {
-            returnURL: 'http://data.nouse.co.uk:29024/login/google/return',
-            realm: 'http://data.nouse.co.uk:29024/'
+            returnURL: 'http://data.nouse.co.uk/login/google/return',
+            realm: 'http://data.nouse.co.uk/'
         },
         function (identifier, profile, done) { // verify callback
             var i;
