@@ -1,65 +1,67 @@
 (function () {
 
-  var form = document.getElementsByTagName('form')[0];
-  var inputs = form.getElementsByTagName('input');
-  var changes = {};
+    "use strict";
 
-  function updateTotals() {
-    // not completely reliable because /tournaments/2//totals.json returns a 404
-    jQuery.get(window.location.href + '/totals.json', function(data) {
-      document.getElementById('homeScore').innerHTML = data.homePoints;
-      document.getElementById('awayScore').innerHTML = data.awayPoints;
-    }, 'json');
-  }
+    var form = document.getElementsByTagName('form')[0],
+        inputs = form.getElementsByTagName('input'),
+        changes = {};
 
-  updateTotals();
+    function updateTotals() {
+        // not completely reliable because /tournaments/2//totals.json returns a 404
+        jQuery.get(window.location.href + '/totals.json', function(data) {
+            document.getElementById('homeScore').innerHTML = data.homePoints;
+            document.getElementById('awayScore').innerHTML = data.awayPoints;
+        }, 'json');
+    }
 
-  function recordChanges(e) {
-    changes[this.id] = this.value;
-  }
+    updateTotals();
 
-  jQuery(inputs).on('input change', recordChanges);
+    function recordChanges() {
+        changes[this.id] = this.value;
+    }
 
-  jQuery(form).on('submit', function(e) {
-    e.preventDefault();
-    jQuery('input[type=submit]').attr('value', 'Saving changes...');
+    jQuery(inputs).on('input change', recordChanges);
 
-    jQuery.post(this.action + '?ajax=true', changes, function() {
-      jQuery('input[type=submit]').attr('value', 'Changes saved');
-      window.setTimeout(function() {
-        jQuery('input[type=submit]').attr('value', 'Save changes');
-      }, 1000);
+    jQuery(form).on('submit', function (e) {
+        e.preventDefault();
+        jQuery('input[type=submit]').attr('value', 'Saving changes...');
+
+        jQuery.post(this.action + '?ajax=true', changes, function() {
+            jQuery('input[type=submit]').attr('value', 'Changes saved');
+            window.setTimeout(function() {
+                jQuery('input[type=submit]').attr('value', 'Save changes');
+            }, 1000);
+        });
+
+        changes = {};
     });
 
-    changes = {};
-  });
+    var socket = io.connect('/');
 
-  var socket = io.connect('/');
-
-  socket.on('connecting', function() {
-    document.title = "Connecting …";
-  })
-  .on('connect', function() {
-    // document.body.style.background = "#eee";
-    document.title = "Connected :)";
-  })
-  .on('disconnect', function() {
-    document.title = "Disconnected :(";
-    // document.body.style.background = "red";
-  })
-  .on('reconnecting', function() {
-    document.title = "Reconnecting …";
-  })
-  .on('update', function(data) {
-    for (field in data) {
-      var element = document.getElementById(field);
-      element.value = data[field];
-      element.style.background = "yellow";
-      window.setTimeout(function() {
-        element.style.background = "white";
-      }, 1000);
-    };
-    updateTotals();
-  });
+    socket.on('connecting', function () {
+        document.title = "Connecting …";
+    })
+        .on('connect', function () {
+            // document.body.style.background = "#eee";
+            document.title = "Connected :)";
+        })
+        .on('disconnect', function () {
+        document.title = "Disconnected :(";
+            // document.body.style.background = "red";
+        })
+        .on('reconnecting', function () {
+            document.title = "Reconnecting …";
+        })
+        .on('update', function (data) {
+            for (var field in data) {
+                var element = document.getElementById(field);
+                element.value = data[field];
+                element.style.background = "yellow";
+                window.setTimeout(function() {
+                    element.style.background = "white";
+                }, 1000);
+            };
+            updateTotals();
+        });
 
 })();

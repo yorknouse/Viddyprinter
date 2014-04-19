@@ -45,7 +45,7 @@ function tournamentFixtures (req, res, view) {
         tournament = row;
       }
     });
-    
+
     db.all('SELECT * FROM fixtures WHERE tournament = $tournament', {
       $tournament: req.params.id
     },
