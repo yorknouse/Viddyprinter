@@ -1,8 +1,8 @@
 // module dependencies
 
-var express = require('express');
-var http = require('http');
-var path = require('path');
+var express = require('express'),
+    http = require('http'),
+    path = require('path');
 
 var fs = require('fs');
 var sqlite3 = require('sqlite3');
@@ -12,8 +12,8 @@ var passport = require('passport'),
 
 var app = express();
 
-var routes = require('./routes');
-
+var routes = require('./routes'),
+    config = require('./config');
 
 // all environments
 
@@ -27,7 +27,7 @@ app.use(express.methodOverride());
 
 app.use(express.cookieParser());
 app.use(express.bodyParser());
-app.use(express.session({ secret: 'ctfvygbuhnijmnhbvugubhno' }));
+app.use(express.session({ secret: config.secret }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -45,10 +45,10 @@ if ('development' === app.get('env')) {
 // authentication
 
 function isLoggedIn(req, res, next) {
-    // if (req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
         return next();
-    // }
-    // res.redirect('/');
+    }
+    res.redirect('/');
 }
 
 passport.use(
@@ -58,8 +58,7 @@ passport.use(
             realm: 'http://data.nouse.co.uk/'
         },
         function (identifier, profile, done) { // verify callback
-            var i;
-            for (i = 0; i < profile.emails.length; i += 1) {
+            for (var i = 0; i < profile.emails.length; i += 1) {
                 if (profile.emails[i].value.substr(-12) === '@nouse.co.uk') {
                     return done(null, identifier);
                 }
@@ -96,17 +95,14 @@ passport.deserializeUser(function (user, done) {
 
 
 // database setup
-
-file = __dirname + '/fixtures.db';
-
-if (!fs.existsSync(file)) {
+if (!fs.existsSync(config.dbfile)) {
     console.log('Creating DB file.');
     fs.openSync(file, 'w');
 
-    var db = new sqlite3.Database(file);
+    var db = new sqlite3.Database(config.dbfile);
 
     db.serialize(function () {
-        db.run('CREATE TABLE Fixtures (id INTEGER PRIMARY KEY, tournament INTEGER, name TEXT, time TEXT, location TEXT, pointsAvailable FLOAT, home TEXT, homeScore FLOAT, awayScore FLOAT, away TEXT);');
+        db.run('CREATE TABLE Fixtures (id INTEGER PRIMARY KEY, tournament INTEGER, name TEXT, time DATETIME, location TEXT, pointsAvailable FLOAT, home TEXT, homeScore FLOAT, awayScore FLOAT, away TEXT);');
         db.run('CREATE TABLE Tournaments (id INTEGER PRIMARY KEY, name TEXT, home TEXT, away TEXT);');
     });
 
@@ -151,11 +147,11 @@ var io = require('socket.io').listen(server);
 
 app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
 
-    var changes = {}; // changes to be broadcast
-    var db = new sqlite3.Database(file);
+    var changes = {}, // changes to be broadcast
+        db = new sqlite3.Database(config.dbfile);
 
     db.serialize(function () {
-        for (field in req.body) {
+        for (var field in req.body) {
             var identifiers = field.split('-'); // ['name', '3']
             switch (identifiers[0]) {
                 case 'name':
