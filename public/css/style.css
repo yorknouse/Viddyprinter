@@ -49,11 +49,11 @@ input[type=text], input[type=number], input[type=time] {
   height: 20px;
 }
 
-tr td:nth-child(5) input, tr td:nth-child(6) input {
+tr td:nth-child(7) input, tr td:nth-child(8) input {
   text-align: right;
 }
 
-tr td:nth-child(3) input, tr td:nth-child(5) input, tr td:nth-child(8) input {
+tr td:nth-child(5) input, tr td:nth-child(7) input, tr td:nth-child(10) input {
   width: 80px;
 }
 
