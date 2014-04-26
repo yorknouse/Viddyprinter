@@ -54,8 +54,8 @@ function isLoggedIn(req, res, next) {
 passport.use(
     new GoogleStrategy(
         {
-            returnURL: 'http://data.nouse.co.uk/login/google/return',
-            realm: 'http://data.nouse.co.uk/'
+            returnURL: config.root + '/login/google/return',
+            realm: config.root
         },
         function (identifier, profile, done) { // verify callback
             for (var i = 0; i < profile.emails.length; i += 1) {
@@ -154,6 +154,8 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
         for (var field in req.body) {
             var identifiers = field.split('-'); // ['name', '3']
             switch (identifiers[0]) {
+                case 'day':
+                case 'sport':
                 case 'name':
                 case 'location':
                 case 'time':

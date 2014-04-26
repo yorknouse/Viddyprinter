@@ -1,4 +1,4 @@
-exports.root = 'http://data.nouse.co.uk/';
+exports.root = 'http://data.nouse.co.uk';
 
 exports.dbfile = __dirname + '/viddyprinter.db';
 
