@@ -97,7 +97,7 @@ passport.deserializeUser(function (user, done) {
 // database setup
 if (!fs.existsSync(config.dbfile)) {
     console.log('Creating DB file.');
-    fs.openSync(file, 'w');
+    fs.openSync(config.dbfile, 'w');
 
     var db = new sqlite3.Database(config.dbfile);
 
