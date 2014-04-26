@@ -1,12 +1,13 @@
 var config = require('./config'),
-    sqlite3 = require('sqlite3'),
-    db = new sqlite3.Database(config.dbfile);
+    sqlite3 = require('sqlite3');
 
 /*
  * GET tournaments administration page
  */
 
 exports.tournaments = function (req, res) {
+
+    var db = new sqlite3.Database(config.dbfile);
 
     db.all('SELECT * FROM Tournaments', function (err, rows) {
         if (!err) {
@@ -25,7 +26,8 @@ exports.tournaments = function (req, res) {
 
 function tournamentFixtures(req, res, view) {
 
-    var tournament = {};
+    var db = new sqlite3.Database(config.dbfile),
+        tournament = {};
 
     db.serialize(function () {
         db.get('SELECT * FROM tournaments WHERE id = $id',
@@ -78,6 +80,8 @@ exports.fixturesHTML = function (req, res) {
 
 exports.fixturesJSON = function (req, res) {
 
+    var db = new sqlite3.Database(config.dbfile);
+
     db.all('SELECT * FROM Fixtures WHERE tournament = $id',
         {
             $id: req.params.id
@@ -98,6 +102,8 @@ exports.fixturesJSON = function (req, res) {
  */
 
 exports.totalsJSON = function (req, res) {
+
+    var db = new sqlite3.Database(config.dbfile);
 
     db.all('SELECT * FROM Fixtures WHERE tournament = $id',
         {
