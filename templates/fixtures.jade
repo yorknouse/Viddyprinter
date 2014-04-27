@@ -1,15 +1,17 @@
 each fixture in fixtures
   li
-    h5 #{fixture.name}
+    h5 
+      | #{fixture.sport}
+      if fixture.name && fixture.sport
+        |  - 
+      | #{fixture.name}
 
     if (fixture.time || fixture.location)
       p
-        if fixture.time
-          | #{fixture.time}
-          if fixture.location
-            , 
-        if fixture.location
-          | #{fixture.location}
+        | #{fixture.time}
+        if fixture.location && fixture.time
+          | , 
+        | #{fixture.location}
 
     p.result
 
