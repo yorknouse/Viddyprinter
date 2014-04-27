@@ -6,14 +6,28 @@ block content
     a(href='/tournaments') Tournaments
     /#{tournament.name}
 
+  table#scoreboard
+    thead
+      tr
+        th(class=tournament.home).
+          #{tournament.home}
+        th(class=tournament.away).
+          #{tournament.away}
+    tbody
+      tr
+        td(class=tournament.home)
+          big#homeScore
+        td(class=tournament.away)
+          big#awayScore
+
   form(method='post' action='/tournaments/'+tournament.id+'/update')
     table
       thead
         tr
           th(scope='col') Day
+          th(scope='col') Time
           th(scope='col') Sport
           th(scope='col') Name
-          th(scope='col') Time
           th(scope='col') Where
           th(scope='col') Points available
           th(scope='col') 
@@ -33,6 +47,13 @@ block content
             td
               input(
                 type ='text',
+                id   ='time-' + fixture.id,
+                name ='time-' + fixture.id,
+                value=fixture.time
+              )
+            td
+              input(
+                type ='text',
                 id   ='sport-' + fixture.id,
                 name ='sport-' + fixture.id,
                 value=fixture.sport
@@ -44,13 +65,6 @@ block content
                 name ='name-' + fixture.id,
                 value=fixture.name
                 )
-            td
-              input(
-                type ='text',
-                id   ='time-' + fixture.id,
-                name ='time-' + fixture.id,
-                value=fixture.time
-              )
             td
               input(
                 type ='text',
@@ -102,22 +116,6 @@ block content
                 value=fixture.away
               )
     input(type='submit' value='Save changes')
-
-  table#scoreboard
-    thead
-      tr
-        th(class=tournament.home).
-          #{tournament.home}
-        th(class=tournament.away).
-          #{tournament.away}
-    tbody
-      tr
-        td(class=tournament.home)
-          big#homeScore
-        td(class=tournament.away)
-          big#awayScore
-
-  #progress
 
   script(src='http://www.nouse.co.uk/wp-includes/js/jquery/jquery.js')
   script(src='/socket.io/socket.io.js')

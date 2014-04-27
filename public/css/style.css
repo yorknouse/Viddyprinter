@@ -37,6 +37,7 @@ code {
 table {
   border-collapse: collapse;
   margin: 0 auto;
+  margin-bottom: 64px;
 }
 
 input[type=text],
@@ -88,7 +89,10 @@ input[type=submit], .button {
 }
 
 input[type=submit] {
-  display: block;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 10px;
 }
 
 input[type=submit]:hover, .button:hover {
