@@ -53,6 +53,7 @@
             document.title = "Reconnecting …";
         })
         .on('update', function (data) {
+            console.log(data);
             for (var field in data) {
                 var element = document.getElementById(field);
                 element.value = data[field];

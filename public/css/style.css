@@ -58,7 +58,9 @@ input[id^=homeScore] {
 
 input[id^=day],
 input[id^=sport],
-input[id^=time] {
+input[id^=time],
+input[id^=home],
+input[id^=away] {
   width: 80px;
 }
 
