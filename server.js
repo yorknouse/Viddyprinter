@@ -58,7 +58,8 @@ passport.use(
             realm: config.root
         },
         function (identifier, profile, done) { // verify callback
-            for (var i = 0; i < profile.emails.length; i += 1) {
+            var i;
+            for (i = 0; i < profile.emails.length; i += 1) {
                 if (profile.emails[i].value.substr(-12) === '@nouse.co.uk') {
                     return done(null, identifier);
                 }
@@ -147,10 +148,11 @@ var io = require('socket.io').listen(server);
 
 app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
 
-    var changes = {}, // changes to be broadcast
-        db = new sqlite3.Database(config.dbfile);
+    var db = new sqlite3.Database(config.dbfile),
+        changes = {};
 
     db.serialize(function () {
+        console.log(req.body);
         for (var field in req.body) {
             var identifiers = field.split('-'); // ['name', '3']
             switch (identifiers[0]) {
@@ -173,20 +175,22 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
                         function (err) {
                             if (err) {
                                 console.log(err);
-                            }
-                            else {
-                                changes[field] = req.body[field];
+                            } else {
+                                console.log(changes);
                             }
                         }
                     );
+                    changes[field] = req.body[field];
+                break;
             }
         }
+        console.log(changes);
     });
 
     db.close(function () {
         io.sockets.emit('update', changes);
         if (req.query.ajax) {
-            res.send(200);
+            res.json(changes);
         }
         else {
             res.redirect('/tournaments/' + req.params.id);

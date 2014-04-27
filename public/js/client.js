@@ -37,9 +37,13 @@
 
         jQuery.post(this.action + '?ajax=true', changes, function () {
             jQuery('input[type=submit]').attr('value', 'Changes saved');
-            window.setTimeout(function () {
+            setTimeout(function () {
                 jQuery('input[type=submit]').attr('value', 'Save changes');
             }, 1000);
+        }, 'json').fail(function () {
+            window.alert('Sorry, your changes weren\'t saved. You might need to log in again.');
+            window.open('/');
+            jQuery('input[type=submit]').attr('value', 'Save changes');
         });
 
         changes = {};
@@ -62,15 +66,16 @@
             document.title = "Reconnecting …";
         })
         .on('update', function (data) {
-            console.log(data);
             for (var field in data) {
                 var element = document.getElementById(field);
                 element.value = data[field];
                 element.style.background = "yellow";
-                window.setTimeout(function() {
-                    element.style.background = "white";
-                }, 1000);
-            };
+            }
+            setTimeout(function () {
+                for (var field in data) {
+                    document.getElementById(field).style.background = "";
+                }
+            }, 500);
             updateTotals();
         });
 
