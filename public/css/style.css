@@ -39,7 +39,9 @@ table {
   margin: 0 auto;
 }
 
-input[type=text], input[type=number], input[type=time] {
+input[type=text],
+input[type=number],
+input[type=time] {
   -webkit-appearance: none;
   border: 1px solid #eee;
   margin: -2px;
@@ -49,11 +51,14 @@ input[type=text], input[type=number], input[type=time] {
   height: 20px;
 }
 
-tr td:nth-child(7) input, tr td:nth-child(8) input {
+input[id=^home],
+input[id=^homeScore] {
   text-align: right;
 }
 
-tr td:nth-child(5) input, tr td:nth-child(7) input, tr td:nth-child(10) input {
+input[id=^day],
+input[id=^sport],
+input[id=^time] {
   width: 80px;
 }
 
