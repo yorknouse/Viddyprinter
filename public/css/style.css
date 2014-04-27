@@ -51,14 +51,14 @@ input[type=time] {
   height: 20px;
 }
 
-input[id=^home],
-input[id=^homeScore] {
+input[id^=home],
+input[id^=homeScore] {
   text-align: right;
 }
 
-input[id=^day],
-input[id=^sport],
-input[id=^time] {
+input[id^=day],
+input[id^=sport],
+input[id^=time] {
   width: 80px;
 }
 
