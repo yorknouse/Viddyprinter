@@ -2,13 +2,19 @@
 
     "use strict";
 
+    String.prototype.toTitleCase = function () {
+        return this.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    };
+
     var form = document.getElementsByTagName('form')[0],
         inputs = form.getElementsByTagName('input'),
         changes = {};
 
     function updateTotals() {
         // not completely reliable because /tournaments/2//totals.json returns a 404
-        jQuery.get(window.location.href + '/totals.json', function(data) {
+        jQuery.get(window.location.href + '/totals.json', function (data) {
             document.getElementById('homeScore').innerHTML = data.homePoints;
             document.getElementById('awayScore').innerHTML = data.awayPoints;
         }, 'json');
@@ -17,6 +23,9 @@
     updateTotals();
 
     function recordChanges() {
+        if (this.id.split('-')[0] !== 'location' && this.value.toUpperCase() === this.value) { // avoid "JLD" etc
+            this.value = this.value.toTitleCase(); // easier pasting from roseslive.co.uk
+        }
         changes[this.id] = this.value;
     }
 
@@ -26,9 +35,9 @@
         e.preventDefault();
         jQuery('input[type=submit]').attr('value', 'Saving changes...');
 
-        jQuery.post(this.action + '?ajax=true', changes, function() {
+        jQuery.post(this.action + '?ajax=true', changes, function () {
             jQuery('input[type=submit]').attr('value', 'Changes saved');
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 jQuery('input[type=submit]').attr('value', 'Save changes');
             }, 1000);
         });
