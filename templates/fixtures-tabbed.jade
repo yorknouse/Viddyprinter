@@ -2,7 +2,7 @@ ul.tabs
   each fixtures, day in days
     li
       if day == 'Friday'
-        a(href='#'+day).active
+        a(href='#'+day).active.
           #{day.substring(0,3)}
       else
         a(href='#'+day).
@@ -11,10 +11,10 @@ ul.tabs
 ul.tabs-content#fixtures-content
   each fixtures, day in days
     if day == 'Friday'
-      li.active(id=day+'Tab')
+      li(id=day+'Tab').active
         ul
           include fixtures
     else
-      li.active(id=day+'Tab')
+      li(id=day+'Tab')
         ul
           include fixtures
