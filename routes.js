@@ -11,7 +11,7 @@ exports.tournaments = function (req, res) {
 
     db.all('SELECT * FROM Tournaments', function (err, rows) {
         if (!err) {
-            res.render('tournaments', { tournaments: rows });
+            res.render('admin-tournaments', { tournaments: rows });
         }
     });
 
@@ -27,7 +27,8 @@ exports.tournaments = function (req, res) {
 function tournamentFixtures(req, res, view) {
 
     var db = new sqlite3.Database(config.dbfile),
-        tournament = {};
+        tournament = {},
+        days = {};
 
     db.serialize(function () {
         db.get('SELECT * FROM tournaments WHERE id = $id',
@@ -41,18 +42,25 @@ function tournamentFixtures(req, res, view) {
                     tournament = row;
                 }
             });
-        db.all('SELECT * FROM fixtures WHERE tournament = $tournament',
+        db.each('SELECT * FROM fixtures WHERE tournament = $tournament',
             {
                 $tournament: req.params.id
             },
-            function (err, rows) {
-                if (!err) {
-                    res.render(view, { tournament: tournament, fixtures: rows });
+            function (err, row) {
+                if (err || !row) {
+                    res.send(404, 'Tournament has no fixtures');
+                } else {
+                    if (!days[row.day]) {
+                        days[row.day] = [];
+                    }
+                    days[row.day][days[row.day].length] = row;
                 }
             });
     });
 
-    db.close();
+    db.close(function () {
+        res.render(view, { tournament: tournament, days: days });
+    });
 
 }
 
@@ -61,7 +69,7 @@ function tournamentFixtures(req, res, view) {
  */
 
 exports.tournament = function (req, res) {
-    tournamentFixtures(req, res, 'tournament');
+    tournamentFixtures(req, res, 'admin-fixtures');
 };
 
 
@@ -70,7 +78,7 @@ exports.tournament = function (req, res) {
  */
 
 exports.fixturesHTML = function (req, res) {
-    tournamentFixtures(req, res, 'fixtures');
+    tournamentFixtures(req, res, 'fixtures-tabbed');
 };
 
 

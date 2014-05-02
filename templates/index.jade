@@ -2,6 +2,11 @@ extends layout
 
 block content
 
+  p
+    | This is 
+    a(href='https://en.wikipedia.org/wiki/Vidiprinter').
+      Viddyprinter
+    | , Nouse's sleek new live score system.
   a(href='/login/google' class='button').
     Log in with your Nouse Google Apps account
   p
@@ -55,3 +60,14 @@ block content
     |   N           NNN  N       oOO             OOo         UU           uU      SS         SSS     EEE          
     |   N            NNN N         OO           OO            UU         uU       SSSs      SSS      EEE          /E
     | nnNnn           NNNNnn         OoooooooooO                UUUUUUUUU         S  SSSSSSSSS       EEEeeeeeeeeeeEE 
+
+  p.
+    A number of URLs are publicly accessible:
+  dl
+      dt /tournaments/n.html
+      dd HTML fragment for inclusion on nouse.co.uk, a list of all fixtures and their scores, times, and locations
+      dt /tournaments/n/totals.json
+      dd JSON formatted calculated total points and points remaining and things
+      dt /tournaments/n.json
+      dd All the fixtures and their scores, times, and locations - in JSON format
+
