@@ -117,8 +117,8 @@ exports.pointsTotals = function (fixtures) {
     };
     
     for (var i = 0; i < fixtures.length; i += 1) {
+        totals.maxPoints += fixtures[i].pointsAvailable;
         if (!fixtures[i].inProgress && fixtures[i].pointsAvailable && typeof (fixtures[i].homeScore) === 'number' && typeof (fixtures[i].awayScore) === 'number') {
-            totals.maxPoints += fixtures[i].pointsAvailable;
             if (fixtures[i].homeScore > fixtures[i].awayScore) {
                 totals.homePoints += fixtures[i].pointsAvailable;
             } else if (fixtures[i].homeScore < fixtures[i].awayScore) {
@@ -130,7 +130,7 @@ exports.pointsTotals = function (fixtures) {
         }
     }
 
-    totals.availablePoints = totals.maxPoints - totals.homePoints - totals.awayPoints;
+    totals.availablePoints = (totals.maxPoints - totals.homePoints - totals.awayPoints);
 
     return totals;
 }
