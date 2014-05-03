@@ -15,10 +15,8 @@ each fixture in fixtures
 
     p.result
 
-      if ( fixture.homeScore || fixture.homeScore === 0 ) && ( fixture.awayScore || fixture.awayScore === 0 )
-
-        if fixture.pointsAvailable
-
+      if fixture.pointsAvailable
+        if !fixture.inProgress && ( fixture.homeScore || fixture.homeScore === 0 ) && ( fixture.awayScore || fixture.awayScore === 0 )
           if (fixture.homeScore > fixture.awayScore)
             span(class=tournament.home).
               #{tournament.home} +#{fixture.pointsAvailable} 
@@ -29,21 +27,16 @@ each fixture in fixtures
             span(class=tournament.home).
               #{tournament.home} +#{fixture.pointsAvailable/2} 
             span(class=tournament.away).
-              #{tournament.away} +#{fixture.pointsAvailable/2} 
-
-        if (fixture.home && fixture.away)
-
-          | (#{fixture.home} #{fixture.homeScore}&ndash;#{fixture.awayScore} #{fixture.away})
-
+                #{tournament.away} +#{fixture.pointsAvailable/2} 
         else
-          | (#{fixture.homeScore}&ndash;#{fixture.awayScore})
-
-      else if fixture.pointsAvailable
-
-        if fixture.pointsAvailable === 1
-          | #{fixture.pointsAvailable} point available 
+          span.
+            #{fixture.pointsAvailable} point#{(fixture.pointsAvailable === 1 ? '' : 's')} available 
+      if ( fixture.homeScore || fixture.homeScore === 0 ) && ( fixture.awayScore || fixture.awayScore === 0 )
+        if fixture.inProgress
+          span.
+            Currently #{fixture.home || tournament.home} #{fixture.homeScore}&ndash;#{fixture.awayScore} #{fixture.away || tournament.away}
         else
-          | #{fixture.pointsAvailable} points available 
-
-        if (fixture.home && fixture.away)
-          | (#{fixture.home} v #{fixture.away}) 
+          span.
+            #{fixture.home || tournament.home} #{fixture.homeScore}&ndash;#{fixture.awayScore} #{fixture.away || tournament.away}
+      else if (fixture.home && fixture.away)
+        | (#{fixture.home} v #{fixture.away})
