@@ -39,4 +39,5 @@ each fixture in fixtures
           span.
             #{fixture.home || tournament.home} #{fixture.homeScore}&ndash;#{fixture.awayScore} #{fixture.away || tournament.away}
       else if (fixture.home && fixture.away)
-        | (#{fixture.home} v #{fixture.away})
+        span.
+          (#{fixture.home} v #{fixture.away})
