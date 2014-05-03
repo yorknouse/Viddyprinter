@@ -60,7 +60,13 @@
     function highlightChanges(data) {
         for (var field in data) {
             var element = document.getElementById(field);
-            element.value = data[field];
+            if ('checkbox' === element.type) {
+                element.checked = (data[field] == 1);
+                console.log((data[field] == 1));
+            }
+            else {
+                element.value = data[field];
+            }
             element.style.background = "yellow";
         }
         setTimeout(function () {
