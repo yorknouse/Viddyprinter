@@ -118,6 +118,7 @@ exports.pointsTotals = function (fixtures) {
     
     for (var i = 0; i < fixtures.length; i += 1) {
         if (!fixtures[i].inProgress && fixtures[i].pointsAvailable && typeof (fixtures[i].homeScore) === 'number' && typeof (fixtures[i].awayScore) === 'number') {
+            totals.maxPoints += pointsAvailable;
             if (fixtures[i].homeScore > fixtures[i].awayScore) {
                 totals.homePoints += fixtures[i].pointsAvailable;
             } else if (fixtures[i].homeScore < fixtures[i].awayScore) {
