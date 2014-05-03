@@ -23,10 +23,14 @@
     updateTotals();
 
     function recordChanges() {
-        if (this.id.split('-')[0] !== 'location' && this.value.toUpperCase() === this.value) { // avoid "JLD" etc
-            this.value = this.value.toTitleCase(); // easier pasting from roseslive.co.uk
+        if ('checkbox' === this.type) {
+            changes[this.id] = (this.checked ? 1 : 0);
+        } else {
+            if (this.id.split('-')[0] !== 'location' && this.value.toUpperCase() === this.value) { // avoid "JLD" etc
+                this.value = this.value.toTitleCase(); // easier pasting from roseslive.co.uk
+            }
+            changes[this.id] = this.value;
         }
-        changes[this.id] = this.value;
     }
 
     jQuery(inputs).on('input change', recordChanges);
@@ -34,6 +38,8 @@
     jQuery(form).on('submit', function (e) {
         e.preventDefault();
         jQuery('input[type=submit]').attr('value', 'Saving changes...');
+
+        console.log(changes);
 
         jQuery.post(this.action + '?ajax=true', changes, function () {
             jQuery('input[type=submit]').attr('value', 'Changes saved');

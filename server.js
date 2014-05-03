@@ -129,25 +129,6 @@ app.get('/logout', function (req, res) {
 
 
 // POST
-
-function pointsTotals(fixtures) {
-    var totals = { homePoints: 0, awayPoints: 0 };
-    
-    for (var i = 0; i < fixtures.length; i += 1) {
-        if (!fixtures[i].inProgress && fixtures[i].pointsAvailable && typeof (fixtures[i].homeScore) === 'number' && typeof (fixtures[i].awayScore) === 'number') {
-            if (fixtures[i].homeScore > fixtures[i].awayScore) {
-                totals.homePoints += fixtures[i].pointsAvailable;
-            } else if (fixtures[i].homeScore < fixtures[i].awayScore) {
-                totals.awayPoints += fixtures[i].pointsAvailable;
-            } else {
-                totals.homePoints += fixtures[i].pointsAvailable / 2;
-                totals.awayPoints += fixtures[i].pointsAvailable / 2;
-            }
-        }
-    }
-
-    return totals;
-}
     
 var io = require('socket.io').listen(server);
 
@@ -167,7 +148,7 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
             },
             function (err, fixtures) {
                 if (!err) {
-                    totalsBefore = pointsTotals(fixtures);
+                    totalsBefore = routes.pointsTotals(fixtures);
                 }
             }
         );
@@ -185,6 +166,7 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
                 case 'homeScore':
                 case 'awayScore':
                 case 'away':
+                case 'inProgress':
                     db.run(
                         "UPDATE Fixtures SET " + identifiers[0] + " = $contents WHERE tournament = $tournamentid AND id = $id",
                         {
@@ -212,7 +194,7 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
             },
             function (err, fixtures) {
                 if (!err) {
-                    totalsAfter = pointsTotals(fixtures);
+                    totalsAfter = routes.pointsTotals(fixtures);
                 }
             }
         );

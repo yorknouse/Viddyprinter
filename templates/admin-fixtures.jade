@@ -20,6 +20,8 @@ block content
         td(class=tournament.away)
           big#awayScore
 
+  p Mark a fixture "in progress" to show the current score without affecting the total points calculations
+
   form(method='post' action='/tournaments/'+tournament.id+'/update')
     tbody
       each day in days
@@ -32,10 +34,11 @@ block content
             th(scope='col') Name
             th(scope='col') Where
             th(scope='col') Points available
-            th(scope='col') 
+            th(scope='col')
             th(scope='col') Score
             th(scope='col') Score
-            th(scope='col') 
+            th(scope='col')
+            th(scope='col') In progress
           tbody
             each fixture in day
               tr
@@ -120,6 +123,23 @@ block content
                     placeholder=tournament.away,
                     value=fixture.away
                   )
+                td
+                  if fixture.inProgress
+                    input(
+                      type ='checkbox'
+                      id   ='inProgress-' +fixture.id,
+                      name ='inProgress-' + fixture.id,
+                      value=1
+                      checked
+                    )
+                  else
+                    input(
+                      type ='checkbox'
+                      id   ='inProgress-' +fixture.id,
+                      name ='inProgress-' + fixture.id
+                      value=1
+                    )
+
     input(type='submit' value='Save changes')
 
   script(src='http://www.nouse.co.uk/wp-includes/js/jquery/jquery.js')

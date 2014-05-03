@@ -106,6 +106,36 @@ exports.fixturesJSON = function (req, res) {
 
 
 /*
+ * Utility function
+ */
+
+exports.pointsTotals = function (fixtures) {
+    var totals = {
+        homePoints: 0,
+        awayPoints: 0,
+        maxPoints: 0
+    };
+    
+    for (var i = 0; i < fixtures.length; i += 1) {
+        if (!fixtures[i].inProgress && fixtures[i].pointsAvailable && typeof (fixtures[i].homeScore) === 'number' && typeof (fixtures[i].awayScore) === 'number') {
+            if (fixtures[i].homeScore > fixtures[i].awayScore) {
+                totals.homePoints += fixtures[i].pointsAvailable;
+            } else if (fixtures[i].homeScore < fixtures[i].awayScore) {
+                totals.awayPoints += fixtures[i].pointsAvailable;
+            } else {
+                totals.homePoints += fixtures[i].pointsAvailable / 2;
+                totals.awayPoints += fixtures[i].pointsAvailable / 2;
+            }
+        }
+    }
+
+    totals.availablePoints = totals.maxPoints - totals.homePoints - totals.awayPoints;
+
+    return totals;
+}
+
+
+/*
  * GET points totals JSON for a tournament
  */
 
@@ -118,45 +148,9 @@ exports.totalsJSON = function (req, res) {
             $id: req.params.id
         },
         function (err, fixtures) {
-
             if (!err) {
-
-                var homePoints = 0,
-                    awayPoints = 0,
-                    maxPoints = 0;
-
-                for (var i = 0; i < fixtures.length; i += 1) {
-
-                    if (fixtures[i].pointsAvailable) {
-
-                        maxPoints += fixtures[i].pointsAvailable;
-
-                        if (typeof (fixtures[i].homeScore) === 'number' && typeof (fixtures[i].awayScore) === 'number') {
-
-                            if (fixtures[i].homeScore > fixtures[i].awayScore) {
-                                homePoints += fixtures[i].pointsAvailable;
-                            } else if (fixtures[i].homeScore < fixtures[i].awayScore) {
-                                awayPoints += fixtures[i].pointsAvailable;
-                            } else {
-                                homePoints += fixtures[i].pointsAvailable / 2;
-                                awayPoints += fixtures[i].pointsAvailable / 2;
-                            }
-
-                        }
-
-                    }
-
-                }
-
-                res.json({
-                    maxPoints:       maxPoints,
-                    availablePoints: (maxPoints - homePoints - awayPoints),
-                    homePoints:      homePoints,
-                    awayPoints:      awayPoints
-                });
-
+                res.json(exports.pointsTotals(fixtures));
             }
-
         });
 
     db.close();
