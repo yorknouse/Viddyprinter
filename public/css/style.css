@@ -42,8 +42,7 @@ table {
 }
 
 input[type=text],
-input[type=number],
-input[type=time] {
+input[type=number] {
   -webkit-appearance: none;
   border: 1px solid #eee;
   margin: -2px;
@@ -53,8 +52,12 @@ input[type=time] {
   height: 20px;
 }
 
-input[id^=home],
-input[id^=homeScore] {
+input[type=checkbox] {
+  padding: 20px;
+  width: 100%;
+}
+
+input[id^=home] {
   text-align: right;
 }
 
@@ -66,8 +69,10 @@ input[id^=away] {
   width: 80px;
 }
 
-input[type=number] {
-  width: 50px;
+input[id*=Score],
+input[id^=pointsAvailable] {
+  text-align: center;
+  width: 40px;
 }
 
 input[type=submit], .button {
