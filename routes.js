@@ -113,7 +113,7 @@ exports.totalsJSON = function (req, res) {
 
     var db = new sqlite3.Database(config.dbfile);
 
-    db.all('SELECT * FROM Fixtures WHERE tournament = $id',
+    db.all('SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
         {
             $id: req.params.id
         },
