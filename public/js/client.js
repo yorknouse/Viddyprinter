@@ -51,31 +51,34 @@
 
     var socket = io.connect('/');
 
+    function highlightChanges(data) {
+        for (var field in data) {
+            var element = document.getElementById(field);
+            element.value = data[field];
+            element.style.background = "yellow";
+        }
+        setTimeout(function () {
+            for (var field in data) {
+                document.getElementById(field).style.background = "";
+            }
+        }, 500);
+    }
+
     socket.on('connecting', function () {
         document.title = "Connecting …";
     })
         .on('connect', function () {
-            // document.body.style.background = "#eee";
             document.title = "Connected :)";
         })
         .on('disconnect', function () {
-        document.title = "Disconnected :(";
-            // document.body.style.background = "red";
+            document.title = "Disconnected :(";
         })
         .on('reconnecting', function () {
             document.title = "Reconnecting …";
         })
-        .on('update', function (data) {
-            for (var field in data) {
-                var element = document.getElementById(field);
-                element.value = data[field];
-                element.style.background = "yellow";
-            }
-            setTimeout(function () {
-                for (var field in data) {
-                    document.getElementById(field).style.background = "";
-                }
-            }, 500);
+        .on('update', highlightChanges)
+        .on('score change', function (data) {
+            highlightChanges(data);
             updateTotals();
         });
 

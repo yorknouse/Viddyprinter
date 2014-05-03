@@ -130,15 +130,48 @@ app.get('/logout', function (req, res) {
 
 // POST
 
+function pointsTotals(fixtures) {
+    var totals = { homePoints: 0, awayPoints: 0 };
+    
+    for (var i = 0; i < fixtures.length; i += 1) {
+        if (!fixtures[i].inProgress && fixtures[i].pointsAvailable && typeof (fixtures[i].homeScore) === 'number' && typeof (fixtures[i].awayScore) === 'number') {
+            if (fixtures[i].homeScore > fixtures[i].awayScore) {
+                totals.homePoints += fixtures[i].pointsAvailable;
+            } else if (fixtures[i].homeScore < fixtures[i].awayScore) {
+                totals.awayPoints += fixtures[i].pointsAvailable;
+            } else {
+                totals.homePoints += fixtures[i].pointsAvailable / 2;
+                totals.awayPoints += fixtures[i].pointsAvailable / 2;
+            }
+        }
+    }
+
+    return totals;
+}
+    
 var io = require('socket.io').listen(server);
 
 app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
 
     var db = new sqlite3.Database(config.dbfile),
-        changes = {};
+        changes = {},
+        totalsBefore = {},
+        totalsAfter = {};
 
     db.serialize(function () {
-        console.log(req.body);
+        // calculate the initial score totals, to see if they are different afterwards
+        db.all(
+            'SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
+            {
+                $id: req.params.id
+            },
+            function (err, fixtures) {
+                if (!err) {
+                    totalsBefore = pointsTotals(fixtures);
+                }
+            }
+        );
+        // now do something with the POST request
         for (var field in req.body) {
             var identifiers = field.split('-'); // ['name', '3']
             switch (identifiers[0]) {
@@ -153,10 +186,11 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
                 case 'awayScore':
                 case 'away':
                     db.run(
-                        "UPDATE Fixtures SET " + identifiers[0] + " = $contents WHERE id = $id",
+                        "UPDATE Fixtures SET " + identifiers[0] + " = $contents WHERE tournament = $tournamentid AND id = $id",
                         {
-                            $id:       identifiers[1],
-                            $contents: req.body[field],
+                            $contents:     req.body[field],
+                            $id:           identifiers[1],
+                            $tournamentid: req.params.id
                         },
                         function (err) {
                             if (err) {
@@ -170,15 +204,30 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
                 break;
             }
         }
-        console.log(changes);
+        // recalculate points totals
+        db.all(
+            'SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
+            {
+                $id: req.params.id
+            },
+            function (err, fixtures) {
+                if (!err) {
+                    totalsAfter = pointsTotals(fixtures);
+                }
+            }
+        );
     });
-
     db.close(function () {
-        io.sockets.emit('update', changes);
+        console.log(totalsBefore);
+        console.log(totalsAfter);
+        if (totalsBefore.homePoints != totalsAfter.homePoints || totalsBefore.awayPoints != totalsAfter.awayPoints) {
+            io.sockets.emit('score change', changes);
+        } else {
+            io.sockets.emit('update', changes);
+        }
         if (req.query.ajax) {
             res.json(changes);
-        }
-        else {
+        } else {
             res.redirect('/tournaments/' + req.params.id);
         }
     });
