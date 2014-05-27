@@ -3,7 +3,14 @@ extends layout
 block content
 
   h1 Tournaments
-  ul: each tournament in tournaments
-    li: a(href='/tournaments/'+tournament.id).
-      #{tournament.name}
+  ul
+    each tournament in tournaments
+      li
+        h2
+          a(href='/tournaments/'+tournament.id).
+            #{tournament.name}
+        p
+          | http://www.nouse.co.uk/livescores/tournaments/#{tournament.id}.html
+        p
+          | http://www.nouse.co.uk/livescores/tournaments/#{tournament.id}/totals.json
   p: a(href = '/logout') Log out
