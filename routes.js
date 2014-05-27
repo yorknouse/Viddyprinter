@@ -9,7 +9,7 @@ exports.tournaments = function (req, res) {
 
     var db = new sqlite3.Database(config.dbfile);
 
-    db.all('SELECT * FROM Tournaments', function (err, rows) {
+    db.all('SELECT * FROM Tournaments ORDER BY id DESC', function (err, rows) {
         if (!err) {
             res.render('admin-tournaments', { tournaments: rows });
         }
