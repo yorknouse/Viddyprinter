@@ -1,11 +1,14 @@
 // module dependencies
 
-var express = require('express'),
+var express      = require('express'),
+    bodyParser   = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    session      = require('express-session'),
     http = require('http'),
     path = require('path');
 
-var fs = require('fs');
-var sqlite3 = require('sqlite3');
+var fs = require('fs')
+    , sqlite3 = require('sqlite3');
 
 var passport = require('passport'),
     GoogleStrategy = require('passport-google').Strategy;
@@ -21,9 +24,28 @@ app.set('view engine', 'jade');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.cookieParser());
-app.use(express.bodyParser());
-app.use(express.session({ secret: config.secret }));
+// accept form POST requests
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+// start to allow logging in
+
+app.use(cookieParser());
+app.use(session({
+    key: '',
+    secret: config.secret,
+    cookie: {
+        path: '/',
+        httpOnly: true,
+        maxAge: null
+    },
+    resave: true,
+    saveUninitialized: true,
+    proxy: null
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -129,7 +151,7 @@ app.get('/logout', function (req, res) {
 
 
 // POST
-    
+
 var io = require('socket.io').listen(server);
 
 app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
