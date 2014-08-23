@@ -7,10 +7,27 @@ block content
     each tournament in tournaments
       li
         h2
-          a(href='/tournaments/'+tournament.id).
-            #{tournament.name}
+          a(href='/tournaments/'+tournament.id) #{tournament.name}
+        p #{tournament.home} v #{tournament.away}
         p
           | http://www.nouse.co.uk/livescores/tournaments/#{tournament.id}.html
         p
           | http://www.nouse.co.uk/livescores/tournaments/#{tournament.id}/totals.json
+
+  form(method='post' action='/tournaments/add')
+    h2 Add new tournament
+    p
+      label
+        | Name: 
+        input(type='text', name='name', required)
+    p
+      label
+        | Home: 
+        input(type='text', name='home', placeholder='Home', required)
+    p
+      label
+        | Away: 
+        input(type='text', name='away', placeholder='Away', required)
+    p
+      input(type='submit' value='Submit')
   p: a(href = '/logout') Log out

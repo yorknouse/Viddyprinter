@@ -19,6 +19,25 @@ exports.tournaments = function (req, res) {
 
 };
 
+/*
+ * POST add new tournament
+ */
+
+exports.tournamentsAdd = function (req, res) {
+    if (req.body.name && req.body.home && req.body.away) {
+        var db = new sqlite3.Database(config.dbfile);
+        db.run('INSERT INTO Tournaments (name, home, away) VALUES ($name, $home, $away)', {
+            $name: req.body.name,
+            $home: req.body.home,
+            $away: req.body.away,
+        }, function () {
+            res.redirect('/tournaments');
+        });
+        db.close();
+    } else {
+        res.redirect('/tournaments');
+    }
+}
 
 /*
  * Generic function for rendering a tournament some way
@@ -115,7 +134,7 @@ exports.pointsTotals = function (fixtures) {
         awayPoints: 0,
         maxPoints: 0
     };
-    
+
     for (var i = 0; i < fixtures.length; i += 1) {
         totals.maxPoints += fixtures[i].pointsAvailable;
         if (!fixtures[i].inProgress && fixtures[i].pointsAvailable && typeof (fixtures[i].homeScore) === 'number' && typeof (fixtures[i].awayScore) === 'number') {

@@ -75,7 +75,9 @@ input[id^=pointsAvailable] {
   width: 40px;
 }
 
-input[type=submit], .button {
+[type=submit],
+button,
+.button {
   cursor: pointer;
   border: 0;
   border-top: 1px solid #fff;
@@ -85,28 +87,34 @@ input[type=submit], .button {
   outline: 0;
   vertical-align: middle;
   -webkit-appearance: none;
-  margin: 24px auto;
   padding: 8px 12px 6px;
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 18px;
   display: inline-block;
   text-decoration: none;
   border-radius: 8px;
 }
 
-input[type=submit] {
+.button-important {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.button-floating {
   position: fixed;
   bottom: 0;
   right: 0;
   margin: 10px;
 }
 
-input[type=submit]:hover, .button:hover {
+input[type=submit]:hover,
+.button:hover {
   border-top-width: 0;
   border-bottom-width: 5px;
 }
 
-input[type=submit]:active, .button:active{
+input[type=submit]:active,
+.button:active {
   border-top-width: 3px;
   border-bottom-width: 2px;
   background: darkred;

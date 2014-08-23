@@ -1,5 +1,7 @@
 // module dependencies
 
+'use strict';
+
 var express      = require('express'),
     bodyParser   = require('body-parser'),
     cookieParser = require('cookie-parser'),
@@ -7,8 +9,8 @@ var express      = require('express'),
     http = require('http'),
     path = require('path');
 
-var fs = require('fs')
-    , sqlite3 = require('sqlite3');
+var fs = require('fs'),
+    sqlite3 = require('sqlite3');
 
 var passport = require('passport'),
     GoogleStrategy = require('passport-google').Strategy;
@@ -104,20 +106,21 @@ passport.deserializeUser(function (user, done) {
 
 // database setup
 
-if (!fs.existsSync(config.dbfile)) {
-    console.log('Creating DB file.');
-    fs.openSync(config.dbfile, 'w');
-
-    var db = new sqlite3.Database(config.dbfile);
-
-    db.serialize(function () {
-        db.run('CREATE TABLE Fixtures (id INTEGER PRIMARY KEY, tournament INTEGER, sport TEXT, name TEXT, day TEXT, time DATETIME, location TEXT, pointsAvailable FLOAT, home TEXT, homeScore FLOAT, awayScore FLOAT, away TEXT, inProgress INTEGER DEFAULT 0);');
-        db.run('CREATE TABLE Tournaments (id INTEGER PRIMARY KEY, name TEXT, home TEXT, away TEXT);');
-    });
-
-    db.close();
-}
-
+fs.open(config.dbfile, 'r', function (err) {
+    if (err) {
+        console.log('Creating DB file.');
+        fs.open(config.dbfile, 'w', function (err) {
+            if (!err) {
+                var db = new sqlite3.Database(config.dbfile);
+                db.serialize(function () {
+                    db.run('CREATE TABLE Fixtures (id INTEGER PRIMARY KEY, tournament INTEGER, sport TEXT, name TEXT, day TEXT, time DATETIME, location TEXT, pointsAvailable FLOAT, home TEXT, homeScore FLOAT, awayScore FLOAT, away TEXT, inProgress INTEGER DEFAULT 0);');
+                    db.run('CREATE TABLE Tournaments (id INTEGER PRIMARY KEY, name TEXT, home TEXT, away TEXT);');
+                });
+                db.close();
+            }
+        });
+    }
+});
 
 // server
 
@@ -151,6 +154,8 @@ app.get('/logout', function (req, res) {
 
 
 // POST
+
+app.post('/tournaments/add', isLoggedIn, routes.tournamentsAdd);
 
 var io = require('socket.io').listen(server);
 
