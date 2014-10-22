@@ -184,3 +184,9 @@ input[type=submit]:active,
     line-height: 40px;
 }
 
+.message {
+  padding: 8px 10px;
+  background: #eee;
+  border-radius: 8px;
+  display: inline-block;
+}

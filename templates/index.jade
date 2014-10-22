@@ -2,8 +2,8 @@ extends layout
 
 block content
 
-  if flash
-    flash
+  each message in messages
+    p.message #{message}
 
   p
     | This is 

@@ -91,9 +91,8 @@ app.get(
         'google',
         {
             successRedirect: '/tournaments',
-            successFlash: true,
             failureRedirect: '/', // try again
-            failureFlash: true
+            failureFlash: 'Logging in didn\'t work. You need to use an `@nouse.co.uk` address.',
         }
     )
 );
@@ -139,11 +138,12 @@ server.listen(app.get('port'), function () {
 // URLs
 
 app.get('/', function (req, res) {
-    if (req.isAuthenticated()) {
-        res.redirect('/tournaments');
-    } else {
-        res.render('index', { flash: req.flash('error') });
-    }
+    res.render('index', { messages: req.flash('error') });
+    // if (req.isAuthenticated()) {
+        // res.redirect('/tournaments');
+    // } else {
+        // res.render('index', { flush: 'flash' });
+    // }
 });
 app.get('/tournaments', isLoggedIn, routes.tournaments);
 app.get('/tournaments/(:id).html', routes.fixturesHTML);
