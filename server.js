@@ -6,6 +6,7 @@ var express      = require('express'),
     bodyParser   = require('body-parser'),
     cookieParser = require('cookie-parser'),
     session      = require('express-session'),
+    flash = require('connect-flash'),
     http = require('http'),
     path = require('path');
 
@@ -51,13 +52,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(flash());
+
 // authentication
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/');
+    res.redirect('/'); 
 }
 
 passport.use(
@@ -88,7 +91,9 @@ app.get(
         'google',
         {
             successRedirect: '/tournaments',
-            failureRedirect: '/' // try again
+            successFlash: true,
+            failureRedirect: '/', // try again
+            failureFlash: true
         }
     )
 );
@@ -137,7 +142,7 @@ app.get('/', function (req, res) {
     if (req.isAuthenticated()) {
         res.redirect('/tournaments');
     } else {
-        res.render('index');
+        res.render('index', { flash: req.flash('error') });
     }
 });
 app.get('/tournaments', isLoggedIn, routes.tournaments);
@@ -145,7 +150,7 @@ app.get('/tournaments/(:id).html', routes.fixturesHTML);
 app.get('/tournaments/(:id).json', routes.fixturesJSON);
 app.get('/tournaments/(:id)/totals.json', routes.totalsJSON);
 app.get('/tournaments/(:id)', isLoggedIn, routes.tournament);
-app.get('/tournaments/(:id)/add', isLoggedIn, routes.tournament);
+app.get('/tournaments/(:id)/add', isLoggedIn, routes.fixturesAdd);
 
 app.get('/logout', function (req, res) {
     req.logout();

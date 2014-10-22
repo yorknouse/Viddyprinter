@@ -40,6 +40,23 @@ exports.tournamentsAdd = function (req, res) {
 }
 
 /*
+ * GET add new fixture
+ */
+
+exports.fixturesAdd = function (req, res) {
+    if (req.params.id) {
+        var db = new sqlite3.Database(config.dbfile);
+        db.run('INSERT INTO Fixtures (tournament) VALUES ($id)', {
+            $id: req.params.id,
+        }, function () {
+            res.redirect('/tournaments/' + req.params.id);
+        });
+        db.close();
+    }
+}
+
+
+/*
  * Generic function for rendering a tournament some way
  */
 
