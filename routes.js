@@ -76,9 +76,9 @@ function tournamentFixtures(req, res, view) {
                     res.send(404, 'Tournament not found');
                 } else {
                     tournament = row;
-                }
+                }   
             });
-        db.each('SELECT * FROM fixtures WHERE tournament = $tournament',
+        db.each('SELECT * FROM fixtures WHERE tournament = $tournament ORDER BY day, time', // works because Friday--Sunday in alphabetical order is the right order
             {
                 $tournament: req.params.id
             },
