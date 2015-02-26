@@ -114,13 +114,7 @@ exports.tournament = function (req, res) {
  */
 
 exports.fixturesHTML = function (req, res) {
-
-    // for multi-day tournaments (Roses)
-    // tournamentFixtures(req, res, 'fixtures-tabbed');
-
-    // for one-day tournaments (College Varsity)
-    tournamentFixtures(req, res, 'fixtures');
-
+    tournamentFixtures(req, res, 'fixtures-tabbed');
 };
 
 
