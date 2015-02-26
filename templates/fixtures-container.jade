@@ -1,5 +1,5 @@
 if multipleDays
-  
+
   ul.tabs
     each fixtures, day in fixturesByDay
       li
@@ -9,7 +9,7 @@ if multipleDays
         else
           a(href='#'+day)
             | #{day.substring(0,3)}
-  
+
   ul.tabs-content#fixtures-content
     each fixtures, day in fixturesByDay
       if day == 'Sunday'
@@ -22,7 +22,6 @@ if multipleDays
             include fixtures
 
 else
-  
-  ul.fixtures
-    each fixtures, day in fixturesByDay
-      include fixtures
+
+  each fixtures, day in fixturesByDay
+    include fixtures
