@@ -95,7 +95,11 @@ function tournamentFixtures(req, res, view) {
     });
 
     db.close(function () {
-        res.render(view, { tournament: tournament, days: days });
+        res.render(view, {
+            tournament: tournament,
+            fixturesByDay: days,
+            multipleDays: (Object.keys(days).length > 1)
+        });
     });
 
 }
@@ -114,7 +118,7 @@ exports.tournament = function (req, res) {
  */
 
 exports.fixturesHTML = function (req, res) {
-    tournamentFixtures(req, res, 'fixtures-tabbed');
+    tournamentFixtures(req, res, 'fixtures-container');
 };
 
 

@@ -138,12 +138,11 @@ server.listen(app.get('port'), function () {
 // URLs
 
 app.get('/', function (req, res) {
-    res.render('index', { messages: req.flash('error') });
-    // if (req.isAuthenticated()) {
-        // res.redirect('/tournaments');
-    // } else {
-        // res.render('index', { flush: 'flash' });
-    // }
+    if (req.isAuthenticated()) {
+        res.redirect('/tournaments');
+    } else {
+        res.render('index', { messages: req.flash('error') });
+    }
 });
 app.get('/tournaments', isLoggedIn, routes.tournaments);
 app.get('/tournaments/(:id).html', routes.fixturesHTML);

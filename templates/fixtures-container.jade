@@ -1,0 +1,28 @@
+if multipleDays
+  
+  ul.tabs
+    each fixtures, day in fixturesByDay
+      li
+        if day == 'Sunday'
+          a(href='#'+day).active
+            | #{day.substring(0,3)}
+        else
+          a(href='#'+day)
+            | #{day.substring(0,3)}
+  
+  ul.tabs-content#fixtures-content
+    each fixtures, day in fixturesByDay
+      if day == 'Sunday'
+        li(id=day+'Tab').active
+          ul
+            include fixtures
+      else
+        li(id=day+'Tab')
+          ul
+            include fixtures
+
+else
+  
+  ul.fixtures
+    each fixtures, day in fixturesByDay
+      include fixtures
