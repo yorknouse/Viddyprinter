@@ -2,4 +2,4 @@
 
 export PATH=/usr/local/bin:$PATH
 export NODE_ENV=production # for app.get('env')
-forever start serverjs
+forever start server.js
