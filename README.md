@@ -26,10 +26,11 @@ When the `NODE_ENV` environment variable is set to `development` (as it is when 
 
 ## Deployment (Nouse-specific notes)
 
-Changes made here have to be manually pulled (as the `www-data` user) for now.
-
 This entry is in `www-data`'s `crontab`:
 
     @reboot  ~/viddyprinter/start-production.sh
 
-The `start-production.sh` and `restart-production.sh` scripts expect [forever](https://github.com/foreverjs/forever) to be installed globally (`sudo npm install forever -g`).
+The `start-production.sh` script expects [forever](https://github.com/foreverjs/forever) to be installed globally (`sudo npm install forever -g`). 
+
+Changes made here have to be manually pulled (as the `www-data` user) for now.
+Then, if you have changed any server-side JavaScript code, you can restart Viddprinter with the command `forever restart server.js` (as the `www-data` user, having navigated to `/var/www/viddyprinter/`).
