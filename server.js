@@ -130,13 +130,11 @@ fs.open(config.dbfile, 'r', function (err) {
     }
 });
 
+
 // server
 
 var server = http.createServer(app);
-
-server.listen(app.get('port'), function () {
-    console.log('http://localhost:' + app.get('port'));
-});
+server.listen(app.get('port');
 
 
 // URLs
@@ -212,8 +210,6 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
                         function (err) {
                             if (err) {
                                 console.log(err);
-                            } else {
-                                console.log(changes);
                             }
                         }
                     );
@@ -235,8 +231,6 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
         );
     });
     db.close(function () {
-        console.log(totalsBefore);
-        console.log(totalsAfter);
         if (totalsBefore.homePoints != totalsAfter.homePoints || totalsBefore.awayPoints != totalsAfter.awayPoints) {
             io.sockets.emit('score change', changes);
         } else {
