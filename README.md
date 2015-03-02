@@ -32,16 +32,4 @@ This entry is in `www-data`'s `crontab`:
 
     @reboot  ~/viddyprinter/start-production.sh
 
-To restart the Node process -- i.e. when changes have been made to server-side JavaScript code (not just templates or static files) -- first run `ps -eo pid,cmd | grep nodejs` and observe some output like this:
-
-    1491 /usr/bin/nodejs /usr/lib/node_modules/forever/bin/monitor /var/www/viddyprinter/server.js
-    1706 /usr/bin/nodejs /var/www/viddyprinter/server.js
-    4364 grep nodejs
-
-Make a note of the ID of the `/usr/bin/nodejs /var/www/viddyprinter/server.js` process (`1706` in the example there), and kill it:
-
-    sudo kill 1706
-
-[forever](https://github.com/foreverjs/forever), the process you didn't kill, will immediately notice and start a new process to replace the freshly killed one.
-
-Note that this will log all users out of their sessions, so is best not done willy-nilly while tournaments are in play.
+The `start-production.sh` and `restart-production.sh` scripts expect [forever](https://github.com/foreverjs/forever) to be installed globally (`sudo npm install forever -g`).
