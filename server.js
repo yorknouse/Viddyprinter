@@ -134,7 +134,7 @@ fs.open(config.dbfile, 'r', function (err) {
 // server
 
 var server = http.createServer(app);
-server.listen(app.get('port');
+server.listen(app.get('port'));
 
 
 // URLs
