@@ -14,7 +14,7 @@ var fs = require('fs'),
     sqlite3 = require('sqlite3');
 
 var passport = require('passport'),
-    GoogleStrategy = require('passport-google').Strategy;
+    GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 var app = express();
 
@@ -66,14 +66,16 @@ function isLoggedIn(req, res, next) {
 passport.use(
     new GoogleStrategy(
         {
-            returnURL: config.root + '/login/google/return',
+            callbackURL: config.root + '/login/google/return',
+			clientID: '355722129027.apps.googleusercontent.com',
+			clientSecret: 'iFRPbiAo6FFVyF88UQjYOu3U',
             realm: config.root
         },
-        function (identifier, profile, done) { // verify callback
+        function (accessToken, refreshToken, profile, done) { // verify callback
             var i;
             for (i = 0; i < profile.emails.length; i += 1) {
                 if (profile.emails[i].value.substr(-12) === '@nouse.co.uk') {
-                    return done(null, identifier);
+                    return done(null, true);
                 }
             }
             return done(null, false);
@@ -83,7 +85,9 @@ passport.use(
 
 // two routes are required for OpenID (Google) authentication
 
-app.get('/login/google', passport.authenticate('google'));
+app.get('/login/google', passport.authenticate('google',{
+	scope: ['email']
+}));
 
 app.get(
     '/login/google/return',
