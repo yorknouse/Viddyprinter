@@ -28,7 +28,7 @@ When the `NODE_ENV` environment variable is set to `development` (as it is when 
 
 This entry is in `www-data`'s `crontab`:
 
-    @reboot  ~/viddyprinter/start-production.sh
+    @reboot  cd ~/viddyprinter/; ./start-production.sh
 
 The `start-production.sh` script expects [forever](https://github.com/foreverjs/forever) to be installed globally (`sudo npm install forever -g`). 
 
