@@ -1,4 +1,4 @@
-extends layout
+extends admin-layout
 
 block content
 
@@ -19,15 +19,15 @@ block content
     p
       label
         | Name: 
-        input(type='text', name='name', required)
+        input(type='text', name='name')
     p
       label
         | Home: 
-        input(type='text', name='home', placeholder='Home', required)
+        input(type='text', name='home', placeholder='Home')
     p
       label
         | Away: 
-        input(type='text', name='away', placeholder='Away', required)
+        input(type='text', name='away', placeholder='Away')
     p
       input(type='submit' value='Submit')
   p: a(href = '/logout') Log out

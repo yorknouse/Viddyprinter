@@ -1,31 +1,23 @@
-var config = require('./config'),
-    sqlite3 = require('sqlite3');
+var config  = require('./config'),
+    sqlite3 = require('sqlite3'),
+    db      = new sqlite3.Database(config.dbfile);
 
 /*
  * GET tournaments administration page
  */
-
 exports.tournaments = function (req, res) {
-
-    var db = new sqlite3.Database(config.dbfile);
-
     db.all('SELECT * FROM Tournaments ORDER BY id DESC', function (err, rows) {
         if (!err) {
             res.render('admin-tournaments', { tournaments: rows });
         }
     });
-
-    db.close();
-
 };
 
 /*
  * POST add new tournament
  */
-
 exports.tournamentsAdd = function (req, res) {
     if (req.body.name && req.body.home && req.body.away) {
-        var db = new sqlite3.Database(config.dbfile);
         db.run('INSERT INTO Tournaments (name, home, away) VALUES ($name, $home, $away)', {
             $name: req.body.name,
             $home: req.body.home,
@@ -33,7 +25,6 @@ exports.tournamentsAdd = function (req, res) {
         }, function () {
             res.redirect('/tournaments');
         });
-        db.close();
     } else {
         res.redirect('/tournaments');
     }
@@ -42,81 +33,69 @@ exports.tournamentsAdd = function (req, res) {
 /*
  * GET add new fixture
  */
-
 exports.fixturesAdd = function (req, res) {
     if (req.params.id) {
-        var db = new sqlite3.Database(config.dbfile);
         db.run('INSERT INTO Fixtures (tournament) VALUES ($id)', {
             $id: req.params.id,
         }, function () {
             res.redirect('/tournaments/' + req.params.id);
         });
-        db.close();
     }
 }
 
-
 /*
- * Generic function for rendering a tournament some way
+ * Generic function for getting and rendering a function some way
  */
-
 function tournamentFixtures(req, res, view) {
+    var tournament,
+        fixturesByDay = {},
+        multipleDays,
+        currentDay;
 
-    var db = new sqlite3.Database(config.dbfile),
-        tournament = {},
-        days = {};
+    db.get('SELECT * FROM tournaments WHERE id = $id',
+        {
+            $id: req.params.id
+        },
+        function (err, row) {
+            if (err || !row) {
+                res.status(404).send('Tournament does not exist');
+            } else {
+                tournament = row;
 
-    db.serialize(function () {
-        db.get('SELECT * FROM tournaments WHERE id = $id',
-            {
-                $id: req.params.id
-            },
-            function (err, row) {
-                if (err || !row) {
-                    res.send(404, 'Tournament not found');
-                } else {
-                    tournament = row;
-                }   
-            });
-        db.each('SELECT * FROM fixtures WHERE tournament = $tournament ORDER BY day, time', // works because Friday--Sunday in alphabetical order is the right order
-            {
-                $tournament: req.params.id
-            },
-            function (err, row) {
-                if (err || !row) {
-                    res.send(404, 'Tournament has no fixtures');
-                } else {
-                    if (!days[row.day]) {
-                        days[row.day] = [];
-                    }
-                    days[row.day][days[row.day].length] = row;
-                }
-            });
-    });
+                db.each('SELECT * FROM fixtures WHERE tournament = $tournament ORDER BY time',
+                    {
+                        $tournament: req.params.id
+                    },
+                    function (err, row) {
+                        if (!err) {
+                            if (!fixturesByDay[row.day]) {
+                                fixturesByDay[row.day] = [];
+                            }
+                            fixturesByDay[row.day].push(row);
+                        }
+                    },
+                    function(err, rows) {
+                        res.render(view, {
+                            tournament: tournament,
+                            fixturesByDay: fixturesByDay,
+                            multipleDays: (rows > 1),
+                        });
+                    });
+            }
 
-    db.close(function () {
-        res.render(view, {
-            tournament: tournament,
-            fixturesByDay: days,
-            multipleDays: (Object.keys(days).length > 1)
         });
-    });
-
 }
 
 /*
  * GET fixtures administration page for a tournament
  */
-
 exports.tournament = function (req, res) {
     tournamentFixtures(req, res, 'admin-fixtures');
 };
 
-
 /*
  * GET fixtures HTML fragment for a tournament
  */
-
 exports.fixturesHTML = function (req, res) {
     tournamentFixtures(req, res, 'fixtures-container');
 };
@@ -125,11 +104,7 @@ exports.fixturesHTML = function (req, res) {
 /*
  * GET fixtures JSON for a tournament
  */
-
 exports.fixturesJSON = function (req, res) {
-
-    var db = new sqlite3.Database(config.dbfile);
-
     db.all('SELECT * FROM Fixtures WHERE tournament = $id',
         {
             $id: req.params.id
@@ -139,16 +114,11 @@ exports.fixturesJSON = function (req, res) {
                 res.json(rows);
             }
         });
-
-    db.close();
-
 };
-
 
 /*
  * Utility function
  */
-
 exports.pointsTotals = function (fixtures) {
     var totals = {
         homePoints: 0,
@@ -158,7 +128,10 @@ exports.pointsTotals = function (fixtures) {
 
     for (var i = 0; i < fixtures.length; i += 1) {
         totals.maxPoints += fixtures[i].pointsAvailable;
-        if (!fixtures[i].inProgress && fixtures[i].pointsAvailable && typeof (fixtures[i].homeScore) === 'number' && typeof (fixtures[i].awayScore) === 'number') {
+        if (!fixtures[i].inProgress
+                && fixtures[i].pointsAvailable
+                && typeof (fixtures[i].homeScore) === 'number'
+                && typeof (fixtures[i].awayScore) === 'number') {
             if (fixtures[i].homeScore > fixtures[i].awayScore) {
                 totals.homePoints += fixtures[i].pointsAvailable;
             } else if (fixtures[i].homeScore < fixtures[i].awayScore) {
@@ -175,15 +148,10 @@ exports.pointsTotals = function (fixtures) {
     return totals;
 }
 
-
 /*
  * GET points totals JSON for a tournament
  */
-
 exports.totalsJSON = function (req, res) {
-
-    var db = new sqlite3.Database(config.dbfile);
-
     db.all('SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
         {
             $id: req.params.id
@@ -193,7 +161,5 @@ exports.totalsJSON = function (req, res) {
                 res.json(exports.pointsTotals(fixtures));
             }
         });
-
-    db.close();
-
 };
+

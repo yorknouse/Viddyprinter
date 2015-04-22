@@ -143,7 +143,7 @@ app.get('/', function (req, res) {
     if (req.isAuthenticated()) {
         res.redirect('/tournaments');
     } else {
-        res.render('index', { messages: req.flash('error') });
+        res.render('admin-index', { messages: req.flash('error') });
     }
 });
 app.get('/tournaments', isLoggedIn, routes.tournaments);
@@ -169,7 +169,7 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
 
     var db = new sqlite3.Database(config.dbfile),
         changes = {},
-        totalsBefore = {},
+        totalsBefore = {}, // used to check whether the changes cause the tournament score to change
         totalsAfter = {};
 
     db.serialize(function () {
@@ -231,16 +231,18 @@ app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
         );
     });
     db.close(function () {
-        if (totalsBefore.homePoints != totalsAfter.homePoints || totalsBefore.awayPoints != totalsAfter.awayPoints) {
-            io.sockets.emit('score change', changes);
-        } else {
-            io.sockets.emit('update', changes);
-        }
         if (req.query.ajax) {
             res.json(changes);
         } else {
             res.redirect('/tournaments/' + req.params.id);
         }
+
+        if (totalsBefore.homePoints != totalsAfter.homePoints || totalsBefore.awayPoints != totalsAfter.awayPoints) {
+            io.sockets.emit('score change', changes);
+        } else {
+            io.sockets.emit('update', changes);
+        }
+
     });
 
 });
