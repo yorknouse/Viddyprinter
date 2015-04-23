@@ -3,6 +3,7 @@ if multipleDays
   ul.tabs
     each day in daysInOrder
       li
+        #{currentDay}
         if day == currentDay
           a(href='#'+day).active
             | #{day.substring(0,3)}

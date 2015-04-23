@@ -39,8 +39,8 @@ function pointsTotals(fixtures) {
 
 // given fixturesByDay, works out the 'current day'
 // -- either the first day with any fixtures without final scores, or the first day
-function currentDay(fixturesByDay) {
-    var days = Object.keys(fixturesByDay);
+function currentDay(fixturesByDay, days) {
+    days = days || Object.keys(fixturesByDay);
     if (days.length === 1) {
         return days[0];
     }
@@ -89,7 +89,7 @@ function tournamentFixtures(req, res, view) {
                             fixturesByDay: fixturesByDay,
                             daysInOrder: days,
                             multipleDays: days.length > 1,
-                            currentDay: currentDay(fixturesByDay),
+                            currentDay: currentDay(fixturesByDay, days),
                         });
                     });
             }
