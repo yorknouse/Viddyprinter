@@ -13,23 +13,22 @@ function pointsTotals(fixtures) {
     };
 
     fixtures.forEach(function (fixture) {
-        if (fixture.pointsAvailable
-                && typeof fixture.pointsAvailable === 'number') {
-            totals.maxPoints += fixtures.pointsAvailable;
-        } else {
-            return;
-        }
-        if (!fixture.inProgress
-                && typeof fixture.homeScore === 'number'
-                && typeof fixture.awayScore === 'number') {
-            if (fixture.homeScore > fixture.awayScore) {
-                totals.homePoints += fixture.pointsAvailable;
-            } else if (fixture.homeScore < fixture.awayScore) {
-                totals.awayPoints += fixture.pointsAvailable;
-            } else {
-                totals.homePoints += fixture.pointsAvailable / 2;
-                totals.awayPoints += fixture.pointsAvailable / 2;
+        if (typeof fixture.pointsAvailable === 'number') {
+            totals.maxPoints += fixture.pointsAvailable;
+            if (!fixture.inProgress
+                    && typeof fixture.homeScore === 'number'
+                    && typeof fixture.awayScore === 'number') {
+                if (fixture.homeScore > fixture.awayScore) {
+                    totals.homePoints += fixture.pointsAvailable;
+                } else if (fixture.homeScore < fixture.awayScore) {
+                    totals.awayPoints += fixture.pointsAvailable;
+                } else {
+                    totals.homePoints += fixture.pointsAvailable / 2;
+                    totals.awayPoints += fixture.pointsAvailable / 2;
+                }
             }
+        } else {
+            console.log(fixture);
         }
     });
 
@@ -67,7 +66,7 @@ function tournamentFixtures(req, res, view) {
             } else {
                 tournament = row;
 
-                db.each('SELECT * FROM fixtures WHERE tournament = $tournament ORDER BY time, day',
+                db.each('SELECT * FROM fixtures WHERE tournament = $tournament ORDER BY time',
                     {
                         $tournament: req.params.id
                     },
