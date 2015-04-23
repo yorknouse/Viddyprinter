@@ -1,7 +1,7 @@
 if multipleDays
 
   ul.tabs
-    each fixtures, day in fixturesByDay
+    each day in daysInOrder
       li
         if day == currentDay
           a(href='#'+day).active

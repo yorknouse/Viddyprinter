@@ -76,10 +76,16 @@ function tournamentFixtures(req, res, view) {
                         }
                     },
                     function (err, rows) {
+                        var days = Object.keys(fixturesByDay);
+                        days = days.sort(function (a, b) { // sort based on the first two letters of the day name
+                            var idealList = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+                            return idealList.indexOf(a.substring(0, 2)) - idealList.indexOf(b.substring(0, 2));
+                        });
                         res.render(view, {
                             tournament: tournament,
                             fixturesByDay: fixturesByDay,
-                            multipleDays: Object.keys(fixturesByDay).length > 1,
+                            daysInOrder: days,
+                            multipleDays: days.length > 1,
                             currentDay: currentDay(fixturesByDay),
                         });
                     });
