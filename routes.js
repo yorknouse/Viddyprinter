@@ -79,7 +79,7 @@ function tournamentFixtures(req, res, view) {
                         res.render(view, {
                             tournament: tournament,
                             fixturesByDay: fixturesByDay,
-                            multipleDays: (rows > 1),
+                            multipleDays: Object.keys(fixturesByDay).length > 1,
                             currentDay: currentDay(fixturesByDay),
                         });
                     });
