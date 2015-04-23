@@ -13,9 +13,13 @@ function pointsTotals(fixtures) {
     };
 
     fixtures.forEach(function (fixture) {
-        totals.maxPoints += fixture.pointsAvailable;
+        if (fixture.pointsAvailable
+                && typeof fixture.pointsAvailable === 'number') {
+            totals.maxPoints += fixtures.pointsAvailable;
+        } else {
+            return;
+        }
         if (!fixture.inProgress
-                && fixture.pointsAvailable
                 && typeof fixture.homeScore === 'number'
                 && typeof fixture.awayScore === 'number') {
             if (fixture.homeScore > fixture.awayScore) {
@@ -198,7 +202,7 @@ exports.fixturesUpdate = function (io) { // higher order function
                 function (err, fixtures) {
                     totalsAfter = pointsTotals(fixtures);
                     if (totalsBefore.homePoints !== totalsAfter.homePoints
-                        || totalsBefore.awayPoints !== totalsAfter.awayPoints) {
+                            || totalsBefore.awayPoints !== totalsAfter.awayPoints) {
                         io.sockets.emit('score change', changes);
                     } else {
                         io.sockets.emit('update', changes);
