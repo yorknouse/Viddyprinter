@@ -63,7 +63,7 @@ function tournamentFixtures(req, res, view) {
             } else {
                 tournament = row;
 
-                db.each('SELECT * FROM fixtures WHERE tournament = $tournament ORDER BY time',
+                db.each('SELECT * FROM fixtures WHERE tournament = $tournament ORDER BY time, day',
                     {
                         $tournament: req.params.id
                     },
@@ -141,75 +141,71 @@ exports.fixturesUpdate = function (io) { // higher order function
             totalsBefore = {}, // used to check whether the changes cause the tournament score to change
             totalsAfter = {};
 
-        // calculate the initial score totals, to see if they are different afterwards
-        db.all('SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
-            {
-                $id: req.params.id
-            },
-            function (err, fixtures) {
-                if (err) {
-                    res.status(500);
-                } else {
+        db.serialize(function () {
+
+            // calculate initial points totals
+            db.all(
+                'SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
+                {
+                    $id: req.params.id
+                },
+                function (err, fixtures) {
                     totalsBefore = pointsTotals(fixtures);
-                    // now do something with the POST request
-                    for (var field in req.body) {
-                        var identifiers = field.split('-'); // ['name', '3']
-                        switch (identifiers[0]) {
-                            case 'day':
-                            case 'sport':
-                            case 'name':
-                            case 'location':
-                            case 'time':
-                            case 'pointsAvailable':
-                            case 'home':
-                            case 'homeScore':
-                            case 'awayScore':
-                            case 'away':
-                            case 'inProgress':
-                                db.run(
-                                    "UPDATE Fixtures SET " + identifiers[0] + " = $contents WHERE tournament = $tournamentid AND id = $id",
-                                    {
-                                        $contents:     req.body[field],
-                                        $id:           identifiers[1],
-                                        $tournamentid: req.params.id
-                                    },
-                                    function (err) {
-                                        if (err) {
-                                            console.log(err);
-                                        }
-                                    }
-                                );
-                                changes[field] = req.body[field];
-                            break;
-                        }
-                    }
+                }
+            );
 
-                    // recalculate points totals
-                    db.all(
-                        'SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
-                        {
-                            $id: req.params.id
-                        },
-                        function (err, fixtures) {
-                            if (!err) {
-                                totalsAfter = pointsTotals(fixtures);
+            // update database
+            db.parallelize(function () {
+                Object.keys(req.body).forEach(function (field) {
+                    var identifiers = field.split('-'); // ['name', '3']
+                    switch (identifiers[0]) {
+                    case 'day':
+                    case 'sport':
+                    case 'name':
+                    case 'location':
+                    case 'time':
+                    case 'pointsAvailable':
+                    case 'home':
+                    case 'homeScore':
+                    case 'awayScore':
+                    case 'away':
+                    case 'inProgress':
+                        db.run(
+                            'UPDATE Fixtures SET ' + identifiers[0] + ' = $value WHERE id = $id',
+                            {
+                                $value: req.body[field],
+                                $id:    identifiers[1]
                             }
-                        }
-                    );
-                    if (req.query.ajax) {
-                        res.json(changes);
-                    } else {
-                        res.redirect('/tournaments/' + req.params.id);
+                        );
+                        changes[field] = req.body[field];
+                        break;
                     }
+                });
+            });
 
-                    if (totalsBefore.homePoints != totalsAfter.homePoints
-                        || totalsBefore.awayPoints != totalsAfter.awayPoints) {
+            if (req.query.ajax) {
+                res.json(changes);
+            } else {
+                res.redirect('/tournaments/' + req.params.id);
+            }
+
+            // recalculate points totals
+            db.all(
+                'SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
+                {
+                    $id: req.params.id
+                },
+                function (err, fixtures) {
+                    totalsAfter = pointsTotals(fixtures);
+                    if (totalsBefore.homePoints !== totalsAfter.homePoints
+                        || totalsBefore.awayPoints !== totalsAfter.awayPoints) {
                         io.sockets.emit('score change', changes);
                     } else {
                         io.sockets.emit('update', changes);
                     }
                 }
-            });
+            );
+        });
     };
 };
 
