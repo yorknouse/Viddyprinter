@@ -33,6 +33,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+
 // start to allow logging in
 
 app.use(cookieParser());
@@ -67,8 +68,8 @@ passport.use(
     new GoogleStrategy(
         {
             callbackURL: config.root + '/login/google/return',
-			clientID: '355722129027.apps.googleusercontent.com',
-			clientSecret: 'iFRPbiAo6FFVyF88UQjYOu3U',
+            clientID: '355722129027.apps.googleusercontent.com',
+            clientSecret: 'iFRPbiAo6FFVyF88UQjYOu3U',
             realm: config.root
         },
         function (accessToken, refreshToken, profile, done) { // verify callback
@@ -84,36 +85,25 @@ passport.use(
 );
 
 // two routes are required for OpenID (Google) authentication
-
-app.get('/login/google', passport.authenticate('google',{
-	scope: ['email']
+app.get('/login/google', passport.authenticate('google', {
+    scope: ['email']
+}));
+app.get('/login/google/return', passport.authenticate('google', {
+    successRedirect: '/tournaments',
+    failureRedirect: '/', // try again
+    failureFlash: 'Logging in didn\'t work. You need to use an `@nouse.co.uk` address.',
 }));
 
-app.get(
-    '/login/google/return',
-    passport.authenticate(
-        'google',
-        {
-            successRedirect: '/tournaments',
-            failureRedirect: '/', // try again
-            failureFlash: 'Logging in didn\'t work. You need to use an `@nouse.co.uk` address.',
-        }
-    )
-);
-
 // session serialization
-
 passport.serializeUser(function (user, done) {
     done(null, user);
 });
-
 passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
 
 // database setup
-
 fs.open(config.dbfile, 'r', function (err) {
     if (err) {
         console.log('Creating DB file.');
@@ -136,14 +126,15 @@ fs.open(config.dbfile, 'r', function (err) {
 var server = http.createServer(app);
 server.listen(app.get('port'));
 
+var io = require('socket.io').listen(server);
+
 
 // URLs
-
 app.get('/', function (req, res) {
     if (req.isAuthenticated()) {
         res.redirect('/tournaments');
     } else {
-        res.render('admin-index', { messages: req.flash('error') });
+        res.render('admin-index', { messages: req.flash() });
     }
 });
 app.get('/tournaments', isLoggedIn, routes.tournaments);
@@ -152,97 +143,9 @@ app.get('/tournaments/(:id).json', routes.fixturesJSON);
 app.get('/tournaments/(:id)/totals.json', routes.totalsJSON);
 app.get('/tournaments/(:id)', isLoggedIn, routes.tournament);
 app.get('/tournaments/(:id)/add', isLoggedIn, routes.fixturesAdd);
-
+app.post('/tournaments/:id/update', isLoggedIn, routes.fixturesUpdate(io));
 app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 });
-
-
-// POST
-
 app.post('/tournaments/add', isLoggedIn, routes.tournamentsAdd);
-
-var io = require('socket.io').listen(server);
-
-app.post('/tournaments/:id/update', isLoggedIn, function (req, res) {
-
-    var db = new sqlite3.Database(config.dbfile),
-        changes = {},
-        totalsBefore = {}, // used to check whether the changes cause the tournament score to change
-        totalsAfter = {};
-
-    db.serialize(function () {
-        // calculate the initial score totals, to see if they are different afterwards
-        db.all(
-            'SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
-            {
-                $id: req.params.id
-            },
-            function (err, fixtures) {
-                if (!err) {
-                    totalsBefore = routes.pointsTotals(fixtures);
-                }
-            }
-        );
-        // now do something with the POST request
-        for (var field in req.body) {
-            var identifiers = field.split('-'); // ['name', '3']
-            switch (identifiers[0]) {
-                case 'day':
-                case 'sport':
-                case 'name':
-                case 'location':
-                case 'time':
-                case 'pointsAvailable':
-                case 'home':
-                case 'homeScore':
-                case 'awayScore':
-                case 'away':
-                case 'inProgress':
-                    db.run(
-                        "UPDATE Fixtures SET " + identifiers[0] + " = $contents WHERE tournament = $tournamentid AND id = $id",
-                        {
-                            $contents:     req.body[field],
-                            $id:           identifiers[1],
-                            $tournamentid: req.params.id
-                        },
-                        function (err) {
-                            if (err) {
-                                console.log(err);
-                            }
-                        }
-                    );
-                    changes[field] = req.body[field];
-                break;
-            }
-        }
-        // recalculate points totals
-        db.all(
-            'SELECT pointsAvailable, homeScore, awayScore, inProgress FROM Fixtures WHERE tournament = $id',
-            {
-                $id: req.params.id
-            },
-            function (err, fixtures) {
-                if (!err) {
-                    totalsAfter = routes.pointsTotals(fixtures);
-                }
-            }
-        );
-    });
-    db.close(function () {
-        if (req.query.ajax) {
-            res.json(changes);
-        } else {
-            res.redirect('/tournaments/' + req.params.id);
-        }
-
-        if (totalsBefore.homePoints != totalsAfter.homePoints || totalsBefore.awayPoints != totalsAfter.awayPoints) {
-            io.sockets.emit('score change', changes);
-        } else {
-            io.sockets.emit('update', changes);
-        }
-
-    });
-
-});

@@ -3,7 +3,7 @@ if multipleDays
   ul.tabs
     each fixtures, day in fixturesByDay
       li
-        if day == 'Sunday'
+        if day == currentDay
           a(href='#'+day).active
             | #{day.substring(0,3)}
         else

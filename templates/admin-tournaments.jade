@@ -19,15 +19,15 @@ block content
     p
       label
         | Name: 
-        input(type='text', name='name')
+        input(type='text', name='name', required)
     p
       label
         | Home: 
-        input(type='text', name='home', placeholder='Home')
+        input(type='text', name='home', placeholder='Home', required)
     p
       label
         | Away: 
-        input(type='text', name='away', placeholder='Away')
+        input(type='text', name='away', placeholder='Away', required)
     p
       input(type='submit' value='Submit')
   p: a(href = '/logout') Log out
