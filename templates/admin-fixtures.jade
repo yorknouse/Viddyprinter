@@ -24,7 +24,7 @@ block content
 
   form(method='post' action='/tournaments/'+tournament.id+'/update')
     tbody
-      each day in fixturesByDay
+      each day in daysInOrder
         table
           thead
             tr
@@ -40,7 +40,7 @@ block content
             th(scope='col')
             th(scope='col') In progress
           tbody
-            each fixture in day
+            each fixture in fixturesByDay[day]
               tr
                 td
                   input(
