@@ -12,7 +12,7 @@ if multipleDays
 
   ul.tabs-content#fixtures-content
     each fixtures, day in fixturesByDay
-      if day == 'Sunday'
+      if day == currentDay
         li(id=day+'Tab').active
           ul
             include fixtures
