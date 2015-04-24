@@ -27,8 +27,6 @@ function pointsTotals(fixtures) {
                     totals.awayPoints += fixture.pointsAvailable / 2;
                 }
             }
-        } else {
-            console.log(fixture);
         }
     });
 
