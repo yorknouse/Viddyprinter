@@ -91,6 +91,7 @@ app.get('/login/google', passport.authenticate('google', {
 app.get('/login/google/return', passport.authenticate('google', {
     successRedirect: '/tournaments',
     failureRedirect: '/', // try again
+    successFlash: 'Welcome!',
     failureFlash: 'Logging in didn\'t work. You need to use an `@nouse.co.uk` address.',
 }));
 
@@ -110,10 +111,8 @@ fs.open(config.dbfile, 'r', function (err) {
         fs.open(config.dbfile, 'w', function (err) {
             if (!err) {
                 var db = new sqlite3.Database(config.dbfile);
-                db.serialize(function () {
-                    db.run('CREATE TABLE Fixtures (id INTEGER PRIMARY KEY, tournament INTEGER, sport TEXT, name TEXT, day TEXT, time DATETIME, location TEXT, pointsAvailable FLOAT, home TEXT, homeScore FLOAT, awayScore FLOAT, away TEXT, inProgress INTEGER DEFAULT 0);');
-                    db.run('CREATE TABLE Tournaments (id INTEGER PRIMARY KEY, name TEXT, home TEXT, away TEXT);');
-                });
+                db.run('CREATE TABLE Fixtures (id INTEGER PRIMARY KEY, tournament INTEGER, sport TEXT, name TEXT, day TEXT, time DATETIME, location TEXT, pointsAvailable FLOAT, home TEXT, homeScore FLOAT, awayScore FLOAT, away TEXT, inProgress INTEGER DEFAULT 0);');
+                db.run('CREATE TABLE Tournaments (id INTEGER PRIMARY KEY, name TEXT, home TEXT, away TEXT);');
                 db.close();
             }
         });

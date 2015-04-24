@@ -42,7 +42,7 @@ function currentDay(fixturesByDay, days) {
     if (days.length === 1) {
         return days[0];
     }
-    return days.filter(function (day) {
+    return days.filter(function (day) { // I would like to use .first() when it is supported
         return fixturesByDay[day].some(function (fixture) { // do any fixtures lack a final score?
             return typeof fixture.homeScore !== 'number' || typeof fixture.awayScore !== 'number';
         });
