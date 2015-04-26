@@ -36,17 +36,17 @@ function pointsTotals(fixtures) {
 }
 
 // given fixturesByDay, works out the 'current day'
-// -- either the first day with any fixtures without final scores, or the first day
+// -- either the last day with any fixtures with final scores, or the first day
 function currentDay(fixturesByDay, days) {
     days = days || Object.keys(fixturesByDay);
     if (days.length === 1) {
         return days[0];
     }
-    return days.filter(function (day) { // I would like to use .first() when it is supported
-        return fixturesByDay[day].some(function (fixture) { // do any fixtures lack a final score?
-            return typeof fixture.homeScore !== 'number' || typeof fixture.awayScore !== 'number';
+    return days.filter(function (day) {
+        return fixturesByDay[day].some(function (fixture) { // do any fixtures have a final score?
+            return typeof fixture.homeScore === 'number' && typeof fixture.awayScore === 'number';
         });
-    }, fixturesByDay)[0] || days[0];
+    }, fixturesByDay).pop() || days[0];
 }
 
 // fetch a tournament's fixtures and render it using some view
